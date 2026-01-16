@@ -1,0 +1,4423 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<!-- <title>MeteorOS V1.7.0</title> -->
+	<title>&#8203;</title>
+	<!-- <link rel="icon" href="https://gointospace.app/assets/favicon.ico" type="image/x-icon"> -->
+	<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c9/Finder_Icon_macOS_Big_Sur.png" type="image/x-icon">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+	<link rel="manifest" href="https://googlechromelabs.github.io/pwa-examples/a2hs/manifest.json">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<style>
+        @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        50% {
+            transform: rotate(360deg);
+        }
+        100% {
+            transform: rotate(720deg);
+        }
+        }
+
+        body {
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default;
+        }
+
+        body.cursor-copy {
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/copy.svg), default;
+        }
+
+        body.cursor-pointer {
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default;
+        }
+
+        body.cursor-none {
+            cursor: none;
+        }
+
+		:root {
+			--bg: #f9fafb;
+			--glass: rgba(0, 0, 0, 0.04);
+			--glass-2: rgba(0, 0, 0, 0.02);
+			--accent: #2563eb;
+			--text: #1f2937;
+			--muted: #6b7280;
+		}
+
+        img {
+            user-drag: none;
+        }
+
+        i {
+            position: relative;
+            top: 1px;
+        }
+
+		html,
+		body {
+			margin: 0;
+			font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+			color: var(--text);
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			background-size: cover;
+			overflow: hidden;
+			user-select: none;
+		}
+
+		.desktop {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+
+		.icon {
+			width: 80px;
+			text-align: center;
+			position: absolute;
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+			color: white;
+		}
+
+		.icon img {
+			width: 64px;
+			height: 64px;
+            position: relative;
+            top: 3px;
+			display: block;
+			margin: 0 auto;
+            border-radius: 5px;
+		}
+
+		main {
+			padding: 40px;
+			max-width: 900px;
+			margin: 0 auto;
+		}
+
+		h1 {
+			font-weight: 600;
+			margin: 0 0 8px;
+		}
+
+		p.lead {
+			color: var(--muted);
+			margin-top: 0;
+		}
+
+		#securityOverlay {
+			position: fixed;
+			inset: 0;
+			display: none;
+			z-index: 9999;
+			pointer-events: auto;
+		}
+
+		#overlayShade {
+			position: fixed;
+			inset: 0;
+			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(243, 244, 246, 0.9));
+			backdrop-filter: blur(6px);
+			z-index: 10001;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding-top: 120px;
+			box-sizing: border-box;
+		}
+
+		.loginCard {
+			width: 100%;
+			height: 100%;
+			background: transparent;
+			border-radius: 12px;
+			padding: 28px;
+			color: var(--text);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+            color: #fff;
+		}
+
+        .logintime {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+		.avatar {
+			width: 88px;
+			height: 88px;
+			border-radius: 50%;
+			overflow: hidden;
+			background: transparent;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 36px;
+			color: #fff;
+		}
+
+        .loginbottom {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+
+		.username {
+			font-size: 18px;
+			font-weight: 600;
+			letter-spacing: 0.2px;
+		}
+
+		.inputRow {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			margin-top: 4px;
+		}
+
+		.textInput {
+			width: 200px;
+			height: 34px;
+			padding: 10px 12px;
+			border-radius: 17px;
+			background: rgba(180, 180, 180, 0.80);
+			color: var(--text);
+			outline: none;
+			font-size: 15px;
+            border: none;
+			box-sizing: border-box;
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default;
+			letter-spacing: 3px;
+		}
+
+		.textInput::selection {
+			background-color: #545e77;
+			color: white;
+		}
+
+		.textInput::placeholder {
+			letter-spacing: 0;
+			transition: color 0.2s ease;
+		}
+
+		.textInput:focus {
+			border-color: var(--accent);
+			box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+			cursor: url(https://andyjiang.neocities.org/textcursor.svg), default;
+		}
+
+		.textInput:focus::placeholder {
+			color: transparent;
+		}
+
+		.actions {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.btn {
+			appearance: none;
+			border: 0;
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+			height: 44px;
+			padding: 0 14px;
+			border-radius: 8px;
+			background: var(--accent);
+			color: white;
+			font-weight: 600;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+		}
+
+		.btn.ghost {
+			background: transparent;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			color: var(--text);
+		}
+
+		.status {
+			color: rgba(230, 230, 230, 0.75);
+            mix-blend-mode: difference;
+			font-size: 15px;
+			min-height: 18px;
+			text-align: center;
+		}
+
+		@media (max-height:600px) {
+			#overlayTopImage {
+				height: 140px;
+			}
+			#overlayShade {
+				padding-top: 70px;
+			}
+		}
+
+		#overlayShade {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-image: url('https://images.macrumors.com/article-new/2024/08/macos-sequoia-hidden-wallpaper.jpg');
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		body {
+			margin: 0;
+			font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+			height: 100vh;
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: center;
+			overflow: hidden;
+			user-select: none;
+		}
+
+		.app-window {
+			position: fixed;
+			top: 80px;
+			left: 120px;
+			width: 700px;
+			height: 500px;
+			border-radius: 10px;
+            background: rgba(255, 255, 255, 0.65);
+			backdrop-filter: blur(18px) saturate(180%);
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+			display: flex;
+			flex-direction: column;
+			z-index: 99;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			transform-origin: center center;
+			opacity: 0;
+			transform: scale(0.5);
+		}
+
+		.app-window.show {
+			opacity: 1;
+			transform: scale(1);
+		}
+
+		.app-window.hide {
+			opacity: 0;
+			transform: scale(0.5);
+		}
+
+		.resize-handle {
+			position: absolute;
+			z-index: 10;
+		}
+
+		.resize-handle.top,
+		.resize-handle.bottom {
+			height: 5px;
+			left: 0;
+			right: 0;
+			cursor: ns-resize;
+		}
+
+		.resize-handle.top {
+			top: -2px;
+		}
+
+		.resize-handle.bottom {
+			bottom: -2px;
+		}
+
+		.resize-handle.left,
+		.resize-handle.right {
+			width: 5px;
+			top: 0;
+			bottom: 0;
+			cursor: ew-resize;
+		}
+
+		.resize-handle.left {
+			left: -2px;
+		}
+
+		.resize-handle.right {
+			right: -2px;
+		}
+
+		.resize-handle.top-left {
+			top: -2px;
+			left: -2px;
+			width: 8px;
+			height: 8px;
+			cursor: nwse-resize;
+		}
+
+		.resize-handle.top-right {
+			top: -2px;
+			right: -2px;
+			width: 8px;
+			height: 8px;
+			cursor: nesw-resize;
+		}
+
+		.resize-handle.bottom-left {
+			bottom: -2px;
+			left: -2px;
+			width: 8px;
+			height: 8px;
+			cursor: nesw-resize;
+		}
+
+		.resize-handle.bottom-right {
+			bottom: -2px;
+			right: -2px;
+			width: 8px;
+			height: 8px;
+			cursor: nwse-resize;
+		}
+
+
+		.app-titlebar {
+			position: relative;
+			height: 32px;
+            background: transparent;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 0 8px;
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default;
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+			min-height: 32px;
+		}
+
+		.app-titlebar .name {
+			font-weight: 600;
+			font-size: 13px;
+			text-align: center;
+		}
+
+        .app-titlebar .controls {
+            position: absolute;
+            left: 8px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .app-titlebar .controls div {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app-titlebar .controls div i {
+            opacity: 0;
+            font-size: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .app-titlebar .controls:hover div i {
+            opacity: 1;
+        }
+
+        .close {
+            background: #fd5754;
+            color: #80060b;
+            border: 1px solid #d94c47;
+        }
+
+        .minimize {
+            background: #febb40;
+            color: #995712;
+            border: 1px solid #dd9f2f;
+        }
+
+        .maximize {
+            background: #34c846;
+            color: #0a660c;
+            border: 1px solid #23ac33;
+        }
+
+		.discon {
+			background: #b2b2b2;
+            color: #767676;
+            border: 1px solid #aaa;
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default !important;
+		}
+
+		.app-iframe {
+			flex: 1;
+			border: 0;
+			width: 100%;
+			border-bottom-left-radius: 12px;
+			border-bottom-right-radius: 12px;
+			min-height: 0px;
+		}
+
+		.dock {
+			position: fixed;
+			bottom: 10px;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			gap: 10px;
+			background: rgba(255, 255, 255, 0.1);
+			padding: 6px 12px;
+			border-radius: 12px;
+			backdrop-filter: blur(10px);
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		}
+
+        .dockleft {
+			display: flex;
+			gap: 10px;
+        }
+
+		.dock .dock-item {
+			width: 50px;
+			height: 50px;
+			border-radius: 13px;
+			background: transparent;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-weight: 700;
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+			position: relative;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.dock .dock-item:hover {
+			transform: scale(1.1);
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+		}
+
+		.dock .dock-item span {
+			position: absolute;
+			bottom: -6px;
+			height: 5px;
+			width: 5px;
+			background: #888;
+			border-radius: 2px;
+			display: none;
+		}
+
+		.dock .dock-item.active span {
+			display: block;
+		}
+
+		.terminal {
+			flex: 1;
+			background: #000;
+			color: #fff;
+			font-family: monospace;
+			font-size: 14px;
+			padding: 10px;
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
+			border-bottom-left-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
+
+		.terminal-line {
+			display: flex;
+		}
+
+		.terminal-input {
+			flex: 1;
+			background: none;
+			border: none;
+			color: #fff;
+			outline: none;
+			font-family: monospace;
+			font-size: 14px;
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default;
+		}
+
+		.terminal::selection {
+			background: #fff;
+			color: #000;
+		}
+
+        .menu {
+            display: none;
+            position: absolute;
+            top: 28px;
+            left: 0;
+            min-width: 250px;
+            padding: 5px;
+            z-index: 999;
+			background-color: rgba(255, 255, 255, 0.3);
+			backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .menu li {
+            display: block;
+            padding: 5px;
+            text-decoration: none;
+            color: #fff;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .menu hr {
+            width: 98%;
+            border-color: rgba(200, 200, 200, 0.5);
+            margin-top: 1px;
+            margin-bottom: 1px;
+        }
+
+        .menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu li:hover {
+            background-color: rgba(21, 121, 244, 0.9);
+            color: #cdcdcd;
+        }
+
+        .menu .disabled {
+            color: #bbb;
+            pointer-events: none;
+        }
+
+		.customMenu {
+			position: absolute;
+			opacity: 0;
+			transform: scale(0.95);
+			transition: opacity 0.15s ease, transform 0.15s ease;
+			pointer-events: none;
+			min-width: 250px;
+            padding: 5px;
+            z-index: 999;
+			background-color: rgba(255, 255, 255, 0.3);
+			backdrop-filter: blur(12px) saturate(180%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            border-radius: 8px;
+            color: #fff;
+		}
+
+		.customMenu.show {
+			opacity: 1;
+			transform: scale(1);
+			pointer-events: auto;
+		}
+
+        .customMenu hr {
+            width: 98%;
+            border-color: rgba(200, 200, 200, 0.5);
+            margin-top: 1px;
+            margin-bottom: 1px;
+        }
+
+		.customMenu ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			border-radius: 8px;
+		}
+
+		.customMenu li {
+			padding: 7px 16px;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+			transition: background-color 0.2s ease;
+            border-radius: 8px;
+		}
+
+		.customMenu li:hover {
+            background-color: rgba(21, 121, 244, 0.9);
+            color: #cdcdcd;
+		}
+
+		.customMenu small {
+			font-size: 10px;
+			position: relative;
+			top: 2px;
+		}
+
+		.top-bar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 28px;
+			background-color: rgba(255, 255, 255, 0.3);
+			backdrop-filter: blur(12px) saturate(180%);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 16px;
+			box-sizing: border-box;
+			z-index: 10;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+			box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+			transition: top 0.3s, background-color 0.3s;
+            color: #fff;
+		}
+
+		.top-bar .left {
+			font-size: 15px;
+		}
+
+		.top-bar .right {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+			font-size: 15px;
+		}
+
+		body img {
+			-webkit-user-drag: none;
+			-khtml-user-drag: none;
+			-moz-user-drag: none;
+			-o-user-drag: none;
+			user-drag: none;
+		}
+
+		#notification-container {
+			position: fixed;
+			top: 38px;
+			right: 25px;
+			width: 300px;
+			z-index: 9999;
+			transition: top 0.3s ease;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.notification {
+			background: rgba(255, 255, 255, 0.65);
+			backdrop-filter: blur(18px) saturate(180%);
+			-webkit-backdrop-filter: blur(18px) saturate(180%);
+			color: #111;
+			padding: 14px 16px;
+			border-radius: 14px;
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25),
+			inset 0 0 0 0.5px rgba(255, 255, 255, 0.3);
+			opacity: 0;
+			transform: translateY(-10px);
+			transition: opacity .35s ease, transform .35s ease;
+		}
+
+		.notification.show {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		.notif-header {
+			display: flex;
+			justify-content: space-between;
+			font-size: 12px;
+			margin-bottom: 6px;
+			font-weight: 600;
+			color: rgba(0, 0, 0, 0.7);
+		}
+
+		.notif-body {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 10px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.notif-image {
+			width: 42px;
+			height: 42px;
+			border-radius: 10px;
+			object-fit: cover;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+		}
+
+		.notif-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 12px;
+		}
+
+		.notif-actions button {
+			padding: 4px 12px;
+			border: none;
+			background: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(12px) saturate(180%);
+			border-radius: 6px;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+			color: rgba(0, 0, 0, 0.8);
+			font-size: 12px;
+			transition: background 0.2s ease, transform 0.15s ease;
+		}
+
+		.notif-actions button:hover {
+			background: rgba(255, 255, 255, 0.25);
+			transform: translateY(-1px);
+		}
+
+		.dock-item.dragging {
+			opacity: 0.001;
+			transform: scale(1.1);
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default;
+		}
+
+		.siri {
+			cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default !important;
+		}
+
+		.shutdown-overlay {
+			position: fixed;
+			inset: 0;
+			background: white;
+			opacity: 0;
+			transition: opacity 2000ms ease-in;
+			z-index: 999999;
+			pointer-events: auto;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default;
+			touch-action: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+			color: #333;
+			font-size: 18px;
+		}
+
+		.shutdown-overlay .msg {
+			opacity: 0;
+			transform: translateY(6px);
+			transition: opacity 350ms ease, transform 350ms ease;
+		}
+
+		.shutdown-overlay.show .msg {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		#window-switcher {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: rgba(255, 255, 255, 0.9);
+			color: #333;
+			border-radius: 10px;
+			padding: 20px;
+			display: none;
+			z-index: 999999;
+			gap: 10px;
+			max-width: 80%;
+			overflow-x: auto;
+			white-space: nowrap;
+			backdrop-filter: blur(10px);
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		}
+
+		#window-switcher .item {
+			display: inline-block;
+			padding: 10px 20px;
+			background: rgba(0, 0, 0, 0.05);
+			border-radius: 6px;
+			margin: 0 5px;
+			transition: 0.2s;
+			border: 2px solid transparent;
+		}
+
+		#window-switcher .item.active {
+			border: 2px solid #6496FF;
+			transform: scale(1.1);
+			background: rgba(255, 255, 255, 0.6);
+		}
+
+		#recent-noti-panel {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			width: 280px;
+
+			background: rgba(255, 255, 255, 0.6);
+			backdrop-filter: blur(20px) saturate(180%);
+			border-radius: 14px;
+			padding: 14px;
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+
+			opacity: 0;
+			transform: translateY(15px);
+			transition: 0.3s ease;
+			pointer-events: none;
+			z-index: 99999;
+		}
+
+		#recent-noti-panel.show {
+			opacity: 1;
+			transform: translateY(0);
+			pointer-events: auto;
+		}
+
+		#recent-noti-panel h3 {
+			margin: 0 0 10px 0;
+			font-size: 15px;
+			font-weight: 600;
+			color: rgba(0, 0, 0, 0.6);
+		}
+
+		.rn-item {
+			display: flex;
+			gap: 10px;
+			padding: 8px 0;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+		}
+
+		.rn-item:last-child {
+			border-bottom: none;
+		}
+
+		.rn-img {
+			width: 38px;
+			height: 38px;
+			border-radius: 8px;
+			object-fit: cover;
+		}
+
+		.rn-text {
+			flex: 1;
+		}
+
+		.rn-sender {
+			font-size: 12px;
+			font-weight: 600;
+			color: rgba(0, 0, 0, 0.7);
+		}
+
+		.rn-message {
+			font-size: 13px;
+			margin-top: 2px;
+		}
+
+		.rn-empty {
+			text-align: center;
+			padding: 12px 0;
+			color: rgba(0, 0, 0, 0.55);
+		}
+
+		.search-box {
+			display: none;
+			position: fixed;
+			top: 68px;
+			right: 10px;
+			padding: 4px 12px;
+			border: 1px solid #aaa;
+			border-radius: 4px;
+			background: rgba(255, 255, 255, 0.7);
+			backdrop-filter: blur(4px);
+			z-index: 999;
+		}
+
+		.search-box:focus {
+			border: 1px solid #aaa;
+			outline: none;
+			box-shadow: none;
+		}
+
+		.password-wrapper {
+			position: relative;
+			display: inline-block;
+			width: 100%;
+		}
+
+		.password-wrapper .toggle-eye {
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			transform: translateY(-50%);
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+			color: #999;
+			user-select: none;
+			font-size: 18px;
+		}
+
+		.password-wrapper .toggle-eye:active {
+			color: #333;
+		}
+
+		.uwithhover:hover {
+			text-decoration: underline;
+		}
+
+        .notch {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 210px;
+            height: 28px;
+            background: #000;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            z-index: 999999999999999999999;
+            cursor: none;
+        }
+
+        .notch::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #1c1c1e;
+            border-radius: 50%;
+            cursor: none;
+        }
+
+        #floatingImg {
+            position: fixed;
+            top: 34px;
+            right: 8px;
+            width: 300px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 999;
+            display: none;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+        }
+
+        .hover-tooltip {
+            position: fixed;
+            padding: 6px 10px;
+            font-size: 14px;
+            color: #000;
+            background: rgba(255, 255, 255, 0.65);
+            border-radius: 6px;
+            pointer-events: none;
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .hover-tooltip::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -6px;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0 6px;
+            border-style: solid;
+            border-color: rgba(255, 255, 255, 0.65) transparent transparent transparent;
+        }
+
+        .box {
+            margin: 100px;
+            padding: 20px 30px;
+            background: #4f46e5;
+            color: #fff;
+            display: inline-block;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+        }
+	</style>
+</head>
+
+<body>
+<div class="notch"></div>
+<div class="desktop" id="desktop">
+</div>
+  <div id="securityOverlay" aria-hidden="true" role="dialog" aria-label="Login">
+    <div id="overlayShade" role="presentation">
+      <div class="loginCard" role="form" aria-labelledby="loginTitle" id="loginCard" style="width: 360px;">
+        <h6 style="font-size: 1.3em; position: absolute; top: 40px;" class="logintime" id="logindate">--</h6>&nbsp;<br>
+        <h1 style="font-size: 5.3em;position: absolute; top: 110px;" class="logintime" id="logintime">--:--</h1>
+        <span style="font-size: 11px; color: #fff; position: absolute; top: 5px; right: 5px;">U.S. 
+            <i class="fa-regular fa-keyboard"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+            <i class="fa-solid fa-wifi"></i></span>
+        <div class="loginbottom" style="width: 100%;">
+        <div class="avatar" aria-hidden="true">
+          <i class="fas fa-user" id="useravatar"></i>
+        </div>
+        <div class="username" id="loginTitle">Meteor User</div>
+          <input id="pwd" class="textInput" type="password" inputmode="numeric" aria-label="Enter Password" placeholder="Enter Password" autocomplete="current-password" />
+        <div class="status" id="statusMsg" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div id="appleMenu" class="menu">
+        <ul>
+            <li onclick="openAbout();">About This Mac</li>
+            <hr>
+            <li onclick="createAppWindow('settings');">System Preferences...</li>
+            <li onclick="openAppStore();">App Store...</li>
+            <hr>
+            <li>Recent Items</li>
+            <hr>
+            <li onclick="forceClose();">Force Quit...</li>
+            <hr>
+            <li onclick="forceClose();">Sleep</li>
+            <li onclick="restartm();">Restart...</li>
+            <li onclick="forceClose();">Shut Down...</li>
+            <hr>
+            <li onclick="lock();">Lock Screen</li>
+            <li onclick="lock();">Log Out User...</li>
+        </ul>
+    </div>
+
+    <div id="finderMenu" class="menu">
+        <ul>
+            <li>About Finder</li>
+            <hr>
+            <li>Preferences</li>
+            <hr>
+            <li onclick="cleartrash()">Empty Trash</li>
+            <hr>
+            <li>Hide Finder</li>
+            <li>Hide Others</li>
+            <li class="disabled">Show All</li>
+        </ul>
+    </div>
+
+    <div id="fileMenu" class="menu">
+        <ul>
+            <li onclick="createAppWindow('finder');">New Finder Window</li>
+            <li onclick="createNewFolder();">New Folder</li>
+            <li class="disabled">New Folder with Selection</li>
+            <li>New Smart Folder</li>
+            <li>New tab</li>
+            <li class="disabled">Open</li>
+            <li class="disabled">Open With</li>
+            <li class="disabled">Print</li>
+            <li class="disabled">Close Window</li>
+            <hr>
+            <li>Get Info</li>
+            <li class="disabled">Rename</li>
+            <hr>
+            <li class="disabled">Compress</li>
+            <hr>
+            <li class="disabled">Duplicate</li>
+            <li class="disabled">Make Alias</li>
+            <li class="disabled">Quick Look</li>
+            <li class="disabled">Show Original</li>
+            <li class="disabled">Add to Sidebar</li>
+            <hr>
+            <li class="disabled">Move to Trash</li>
+            <li class="disabled">Eject</li>
+            <hr>
+            <li>Find</li>
+            <hr>
+            <li class="disabled">Tags...</li>
+        </ul>
+    </div>
+
+    <div id="editMenu" class="menu">
+        <ul>
+            <li class="disabled">Undo</li>
+            <li class="disabled">Redo</li>
+            <hr>
+            <li class="disabled">Cut</li>
+            <li class="disabled">Copy</li>
+            <li class="disabled">Paste</li>
+            <li class="disabled">Select All</li>
+            <hr>
+            <li>Show Clipboard</li>
+            <li>Start Dictation...</li>
+            <li>Emoji & Symbols</li>
+        </ul>
+    </div>
+
+    <div id="viewMenu" class="menu">
+        <ul>
+            <li class="disabled">As Icons</li>
+            <li class="disabled">As List</li>
+            <li class="disabled">As Columns</li>
+            <li class="disabled">As Gallery</li>
+            <hr>
+            <li>Use Stacks</li>
+            <li onclick="organize();">Sort By</li>
+            <li class="disabled">Clean Up</li>
+            <li class="disabled">Clean Up By</li>
+            <hr>
+            <li class="disabled">Hide Sidebar</li>
+            <li class="disabled">Show Preview</li>
+            <hr>
+            <li class="disabled">Hide Toolbar</li>
+            <li class="disabled">Show All Tabs</li>
+            <li class="disabled">Show Tab Bar</li>
+            <li class="disabled">Show Path Bar</li>
+            <li class="disabled">Show Status Bar</li>
+            <hr>
+            <li class="disabled">Customize Toolbar...</li>
+            <hr>
+            <li>Show View Options</li>
+            <li onclick="loadXRayGoggles();">Inspect</li>
+            <li onclick="togglePointerLock();">View Mode</li>
+            <li class="disabled">Show Preview Options</li>
+            <hr>
+            <li id="menuFullscreen" onclick="toggleFullscreen()">Enter Full Screen</li>
+        </ul>
+    </div>
+
+    <div id="goMenu" class="menu">
+        <ul>
+            <li class="disabled">Back</li>
+            <li class="disabled">Forward</li>
+            <li>Enclosing Folder</li>
+            <hr>
+            <li>Recents</li>
+            <li>Documents</li>
+            <li>Desktop</li>
+            <li>Downloads</li>
+            <li>Home</li>
+            <li>Computer</li>
+            <li>Airdrop</li>
+            <li>Network</li>
+            <li>iCloud Drive</li>
+            <li>Applications</li>
+            <li>Utilities</li>
+            <hr>
+            <li>Go to Folder</li>
+            <li>Connect to Server</li>
+        </ul>
+    </div>
+
+    <div id="windowMenu" class="menu">
+        <ul>
+            <li class="disabled">Minimize</li>
+            <li class="disabled">Zoom</li>
+            <li class="disabled">Move Window to Left Side of Screen</li>
+            <li class="disabled">Move Window to Right Side of Screen</li>
+            <li onclick="showAllWindows();">All Windows</li>
+            <hr>
+            <li class="disabled">Show Previous Tab</li>
+            <li class="disabled">Show Next Tab</li>
+            <li class="disabled">Move Tab to New Window</li>
+            <li class="disabled">Merge all Windows</li>
+            <hr>
+            <li onclick="bringAllToFront();">Bring All to Front</li>
+        </ul>
+    </div>
+
+    <div id="helpMenu" class="menu">
+        <ul>
+            <li>Send Finder Feedback</li>
+            <hr>
+            <li>macOS help</li>
+        </ul>
+    </div>
+    <div id="notification-container"></div>
+	
+    <div class="dock" id="dock">
+        <div class="dockleft" id="dockleft"></div>
+        <div class="dock-item" 
+              style="pointer-events: none; position: relative; top: 4px; left: 5px; right: 5px; height:40px; width:1px; background-color: #aaa;">
+        </div>
+        <img class="dock-item" onclick="createAppWindow('finderd');" style="position: relative; top: 5px; height: 40px; width: 60px;" hover-text="Downloads" src="https://i.postimg.cc/pdj50tFf/folder-icon-macos.png">
+        <img class="dock-item" style="position: relative; right: 5px;" id="trashbin" hover-text="Trash" src="https://www.icons101.com/icon_ico/id_72062/trashempty.ico">
+    </div>
+<div id="customMenu" class="customMenu">
+  <ul>
+<li style="display:flex;align-items:center;" onclick="createNewFolder()">New Folder</li>
+<hr>
+<li style="display:flex;align-items:center;">Get Info</li>
+<li style="display:flex;align-items:center;" onclick="changebg();">Change Wallpaper... <small style="margin-left:auto;"><b>⌥</b> + Shift</small></li>
+<hr>
+<li style="display:flex;align-items:center;" onclick="organize();">Organize <small style="margin-left:auto;"><b>⌘</b> + Shift + O</small></li>
+<li style="display:flex;align-items:center;" onclick="toggleFullscreen();">Fullscreen <small style="margin-left:auto;"><b>⌘</b> + F</small></li>
+<hr>
+<li id="notchtext" onclick="toggleNotch();">Show Notch</li>
+<hr>
+<li style="display:flex;align-items:center;" onclick="createAppWindow('terminal'); finderText.textContent = 'Terminal';">Open in terminal <small style="margin-left:auto;"><b>⌥</b> + T</small></li>
+  </ul>
+</div>
+
+<div id="iconMenu" class="customMenu">
+  <ul>
+<li style="display:flex;align-items:center;" onclick="">Open <small style="margin-left:auto;"></small></li>
+<li style="display:flex;align-items:center;" onclick="">Move to Trash <small style="margin-left:auto;"><b>⌘</b> + Shift + Backspace</small></li>
+<hr>
+<li style="display:flex;align-items:center;" onclick="">Get Info</li>
+<li style="display:flex;align-items:center;" onclick="">Rename</li>
+<li style="display:flex;align-items:center;" onclick="">Compress to... <small style="margin-left:auto;"><b>⌘</b> + <b>⌥</b> + Z</small></li>
+<li style="display:flex;align-items:center;" onclick="">Share to iPad or iPhone... <small style="margin-left:auto;"><b>⌥</b> + S</small></li>
+<hr>
+<li style="display:flex;align-items:center;" onclick="openAppStore();">Open Appstore</li>
+  </ul>
+</div>
+	<div class="top-bar" id="topBar">
+		<div class="left">
+    <b style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'appleMenu')" class="cursor-pointer"><i class="fa-brands fa-apple"></i></b>&nbsp;&nbsp;&nbsp;&nbsp;
+    <b style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'finderMenu')" id="FinderText">Finder</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'fileMenu')">File</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'editMenu')">Edit</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'viewMenu')">View</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'goMenu')">Go</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'windowMenu')">Window</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="showMenu(event, 'helpMenu')">Help</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="right">
+            <i class="fa fa-wifi" onclick="showImg();" style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" title="Connected to internet, Strong signal"></i>
+            <div id="micicon" style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important; height: 20px;width: 21px;border-radius: 4px;display: flex;justify-content: center;align-items: center;">
+                <i class="fa fa-microphone"></i>
+            </div>
+            <div id="donotdisturb" 
+                     style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important; height: 20px; width: 21px; border-radius: 4px; display: flex; justify-content: center; align-items: center;">
+                <i class="fa-solid fa-circle-minus" 
+                    onclick="toggleDoNotDisturb();" 
+                    title="Toggle Do Not Disturb"></i>
+            </div>
+            <i class="fa-solid fa-universal-access" onclick="showImg();" style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;"  title="Universal access"></i>
+            <i class="fa-solid fa-laptop" onclick="showImg();" style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" title="Laptop"></i>
+            <i class="fa-regular fa-bell" style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="toggleRecentNoti();" id="notiicon" title="See recent notifications"></i>
+            <img 
+                src="https://i.postimg.cc/bw0MxCpR/free-control-centre-icon-svg-download-png-1569043.png"
+                title="Controls"
+                style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important; filter: invert(1); height: 18px; width: auto;"
+                onclick="showImg();"
+            >
+            <img class="siri" src="https://www.apple.com/v/siri/i/images/overview/routers_tile_1__gds6mleh3lea_large.png" title="Siri" style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important; height: 18px; width: auto;">
+            <i class="fas fa-magnifying-glass" 
+                id="searchIcon"
+                style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" 
+                title="Search Google"></i>
+            <input style="cursor: url(https://andyjiang.neocities.org/textcursor.svg), default;" id="searchInput" type="text" placeholder="Search Google or enter URL" class="search-box" autocorrect="off" autocapitalize="off" spellcheck="false" autocomplete="off">
+            <div id="battery">--%</div>
+            <div id="date">--</div>
+            <div id="time">--:--</div>
+        </div>
+<canvas style="position: fixed; right: 0; bottom: 0; width: 1px; height: 1px; z-index: -1;"></canvas>
+<img id="floatingImg" src="https://i.postimg.cc/W3m6KKfb/Screenshot-2026-01-06-4-26-33-PM.png">
+<script>
+function showImg() {
+  const img = document.getElementById('floatingImg');
+
+  if (img.style.display === 'block') {
+    img.style.display = 'none';
+    document.removeEventListener('click', hideImgOnClick);
+  } else {
+    img.style.display = 'block';
+
+    function hideImgOnClick(event) {
+      if (event.target !== img) {
+        img.style.display = 'none';
+        document.removeEventListener('click', hideImgOnClick);
+      }
+    }
+
+    setTimeout(() => {
+      document.addEventListener('click', hideImgOnClick);
+    }, 0);
+  }
+}
+
+  const notch = document.querySelector('.notch');
+  const notchtext = document.getElementById("notchtext");
+  notch.style.display = 'none';
+
+  function toggleNotch() {
+    if (!notch) return;
+
+    if (notch.style.display === 'none') {
+      notch.style.display = 'block';
+      notchtext.textContent = 'Hide Notch';
+    } else {
+      notch.style.display = 'none';
+      notchtext.textContent = 'Show Notch';
+    }
+}
+
+const trash = document.getElementById('trashbin');
+
+function isOverTrashbin(element) {
+  if (!trash) return false;
+
+  const elRect = element.getBoundingClientRect();
+  const trashRect = trash.getBoundingClientRect();
+
+  return !(
+    elRect.right < trashRect.left ||
+    elRect.left > trashRect.right ||
+    elRect.bottom < trashRect.top ||
+    elRect.top > trashRect.bottom
+  );
+}
+
+function installApp(Appname, imageUrl, onclickFunction, topPosition = 50, leftPosition = 50) {
+  const desktop = document.getElementById('desktop');
+  
+  let uniqueAppName = Appname;
+  let counter = 1;
+
+  while (desktop.querySelector(`.icon[data-app-name="${uniqueAppName}"]`)) {
+    uniqueAppName = `${Appname} (${counter})`;
+    counter++;
+  }
+
+  const newItem = document.createElement('div');
+  newItem.classList.add('icon');
+  newItem.setAttribute('data-app-name', uniqueAppName);
+
+  const img = document.createElement('img');
+  img.src = imageUrl;
+  img.style.height = '40px';
+  img.style.width = 'auto';
+  
+  newItem.appendChild(img);
+
+  const span = document.createElement('span');
+  span.style.fontSize = '14px';
+  span.textContent = uniqueAppName;
+  newItem.appendChild(span);
+
+  newItem.ondblclick = onclickFunction;
+
+newItem.onclick = function(event) {
+    event.stopPropagation();
+    newItem.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+    newItem.style.border = "1px solid rgba(255, 255, 255, 0.36)";
+    newItem.style.borderRadius = "4px"; 
+};
+
+document.addEventListener('click', function() {
+    newItem.style.backgroundColor = "";
+    newItem.style.border = "";
+    newItem.style.borderRadius = "";
+});
+
+  newItem.style.top = `${topPosition}px`;
+  newItem.style.left = `${leftPosition}px`;
+
+  makeDraggable(newItem);
+
+  desktop.appendChild(newItem);
+  organize();
+}
+
+function makeDraggable(element) {
+  let isDragging = false;
+  let offsetX, offsetY;
+  let initialTop, initialLeft;
+
+  element.style.setProperty(
+    "cursor",
+    "url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default",
+    "important"
+  );
+
+  element.addEventListener('mousedown', (e) => {
+    isDragging = true;
+
+    offsetX = e.clientX - element.getBoundingClientRect().left;
+    offsetY = e.clientY - element.getBoundingClientRect().top;
+
+    initialTop = parseInt(element.style.top);
+    initialLeft = parseInt(element.style.left);
+
+    element.style.position = 'absolute';
+    element.style.zIndex = 99999999;
+
+    element.style.setProperty(
+      "cursor",
+      "url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default",
+      "important"
+    );
+
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    let newLeft = e.clientX - offsetX;
+    let newTop = e.clientY - offsetY;
+
+    const desktopWidth = window.innerWidth;
+    const desktopHeight = window.innerHeight;
+
+    const elementWidth = element.offsetWidth;
+    const elementHeight = element.offsetHeight;
+
+    newLeft = Math.max(50, Math.min(newLeft, desktopWidth - elementWidth - 50));
+
+    if (!isOverTrashbin(element)) {
+      newTop = Math.max(50, Math.min(newTop, desktopHeight - elementHeight - 50));
+        element.style.setProperty(
+        "cursor",
+        "url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg), default",
+        "important"
+        );
+    } else {
+      element.style.setProperty(
+        "cursor",
+        "url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/copy.svg), default",
+        "important"
+      );
+    }
+
+    element.style.left = `${newLeft}px`;
+    element.style.top = `${newTop}px`;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    if (isOverTrashbin(element)) {
+      element.remove();
+      document.body.style.userSelect = '';
+      trash.src = 'https://www.icons101.com/icon_ico/id_72063/trashfull.ico';
+      return;
+    }
+
+    const snappedLeft = snapToGrid(parseInt(element.style.left));
+    const snappedTop = snapToGrid(parseInt(element.style.top));
+
+    if (isPositionOccupied(snappedLeft, snappedTop, element)) {
+      element.style.left = `${initialLeft}px`;
+      element.style.top = `${initialTop}px`;
+    } else {
+      element.style.left = `${snappedLeft}px`;
+      element.style.top = `${snappedTop}px`;
+    }
+
+    element.style.zIndex = '';
+    document.body.style.userSelect = '';
+
+    element.style.setProperty(
+      "cursor",
+      "url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default",
+      "important"
+    );
+  });
+}
+
+
+function cleartrash() {
+    trash.src = 'https://www.icons101.com/icon_ico/id_72062/trashempty.ico';
+}
+
+function snapToGrid(position) {
+  const margin = 50;
+  const gridSpacing = 100;
+  
+  const positionWithMargin = position - margin;
+  return Math.round(positionWithMargin / gridSpacing) * gridSpacing + margin;
+}
+
+function isPositionOccupied(left, top, currentElement) {
+  const desktop = document.getElementById('desktop');
+  const appItems = Array.from(desktop.getElementsByClassName('icon'));
+
+  for (let item of appItems) {
+    if (item !== currentElement) {
+      const itemRect = item.getBoundingClientRect();
+      const newRect = {
+        left: left,
+        top: top,
+        right: left + itemRect.width,
+        bottom: top + itemRect.height
+      };
+
+      if (
+        newRect.left < itemRect.right &&
+        newRect.right > itemRect.left &&
+        newRect.top < itemRect.bottom &&
+        newRect.bottom > itemRect.top
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function removeApp(Appname) {
+  const desktop = document.getElementById('desktop');
+  
+  const appItems = desktop.getElementsByClassName('icon');
+  for (let item of appItems) {
+    if (item.getAttribute('data-app-name') === Appname) {
+      desktop.removeChild(item);
+      break;
+    }
+  }
+}
+
+function organize() {
+  const desktop = document.getElementById('desktop');
+  const appItems = Array.from(desktop.getElementsByClassName('icon'));
+
+  const validItems = appItems.filter(item => item.getAttribute('data-app-name') !== null);
+
+  validItems.sort((a, b) => {
+    const nameA = a.getAttribute('data-app-name').toUpperCase();
+    const nameB = b.getAttribute('data-app-name').toUpperCase();
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+
+  let topPosition = 50;
+  let leftPosition = 50;
+  const spacing = 100;
+  const columnWidth = 100;
+
+  const desktopHeight = window.innerHeight;
+
+  validItems.forEach(item => {
+    item.style.top = `${topPosition}px`;
+    item.style.left = `${leftPosition}px`;
+
+    if (topPosition + spacing + item.offsetHeight > desktopHeight) {
+      leftPosition += columnWidth;
+      topPosition = 50;
+    } else {
+      topPosition += spacing;
+    }
+  });
+}
+
+installApp("Background Images", "https://i.postimg.cc/pdj50tFf/folder-icon-macos.png", () => {}, 50, 50);
+installApp("Applications", "https://i.postimg.cc/pdj50tFf/folder-icon-macos.png", () => {}, 50, 150);
+installApp("About MeteorOS.pdf", "https://i.postimg.cc/bN3yV1wn/1667px-PDF-file-icon-svg.png", () => {}, 150, 50);
+
+function createNewFolder() {
+    installApp("New Folder", "https://i.postimg.cc/pdj50tFf/folder-icon-macos.png", () => {});
+}
+
+const finderText = document.getElementById("FinderText");
+const searchIcon = document.getElementById("searchIcon");
+const searchInput = document.getElementById("searchInput");
+
+let searchVisible = false;
+
+searchIcon.onclick = function () {
+    searchVisible = !searchVisible;
+
+    if (searchVisible) {
+        searchInput.style.display = "inline-block";
+        searchInput.focus();
+    } else {
+        searchInput.style.display = "none";
+    }
+};
+
+function truncateTitle(title, maxLength = 25) {
+    return title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
+}
+
+function extractDomain(url) {
+    try {
+        const u = new URL(url);
+        return u.hostname;
+    } catch (e) {
+        return url;
+    }
+}
+
+searchInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        const searchKeyword = searchInput.value.trim();
+
+        if (searchKeyword !== "") {
+            let isURL = false;
+            let finalURL = "";
+            let title = "";
+
+            if (/^https?:\/\//i.test(searchKeyword)) {
+                isURL = true;
+                finalURL = searchKeyword;
+                title = extractDomain(finalURL);
+            } else if (/^[\w.-]+\.[a-zA-Z]{2,}(:\d+)?(\/.*)?$/.test(searchKeyword)) {
+                isURL = true;
+                finalURL = "https://" + searchKeyword;
+                title = extractDomain(finalURL);
+            }
+
+            if (isURL) {
+                createAppWindow(truncateTitle(title), finalURL);
+                finderText.textContent = 'Chrome';
+            } else {
+                const encoded = encodeURIComponent(searchKeyword);
+                createAppWindow(
+                    truncateTitle("Google Search - " + searchKeyword),
+                    "https://www.google.com/search?q=" + encoded + "&igu=1"
+                );
+                finderText.textContent = 'Google';
+            }
+        }
+
+        searchInput.value = "";
+        searchInput.style.display = "none";
+        searchVisible = false;
+    }
+});
+
+function loadXRayGoggles() {
+    var script = document.createElement('script');
+    script.src = 'https://x-ray-goggles.mouse.org/webxray.js';
+    script.className = 'webxray';
+    script.setAttribute('data-lang', 'en-US');
+    script.setAttribute('data-baseuri', 'https://x-ray-goggles.mouse.org');
+    document.body.appendChild(script);
+    noti("You are now inspecting MeteorOS, this could damage the system");
+}
+
+function changeAvatar(newIconClass, style = 'fas') {
+    const avatar = document.getElementById('useravatar');
+    if (!avatar) {
+        return;
+    }
+    avatar.className = `${style} ${newIconClass}`;
+}
+
+const initialPositions = {};
+
+window.onload = function () {
+    const icons = document.querySelectorAll('.icon');
+    icons.forEach(icon => {
+        initialPositions[icon.id] = {
+            top: icon.style.top,
+            left: icon.style.left
+        };
+    });
+};
+
+const securityOverlay = (function () {
+    const overlay = document.getElementById('securityOverlay');
+    const pwdInput = document.getElementById('pwd');
+    const status = document.getElementById('statusMsg');
+    const loginCard = document.getElementById('loginCard');
+    const loginTitle = document.getElementById('loginTitle');
+
+    let CORRECT = null;
+    const isFirstTime = () => !CORRECT;
+
+function showOverlay() {
+    const cards = document.querySelectorAll('.loginCard');
+    cards.forEach(card => {
+        card.style.width = '360px';
+    });
+
+    overlay.style.display = 'block';
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 400ms ease-out';
+
+    void overlay.offsetWidth;
+
+    overlay.style.opacity = '1';
+    overlay.setAttribute('aria-hidden', 'false');
+
+        try {
+            pwdInput.focus();
+            pwdInput.select();
+        } catch (e) { }
+
+    if (isFirstTime()) {
+        loginTitle.textContent = "Meteor User";
+        status.textContent = "Set your password";
+    } else {
+        loginTitle.textContent = thedevicename;
+        status.textContent = "";
+    }
+}
+
+function hideOverlay() {
+    overlay.style.transition = 'opacity 260ms ease';
+    overlay.style.opacity = '0';
+
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.style.transition = '';
+        status.textContent = '';
+        pwdInput.value = '';
+    }, 300);
+}
+
+    function attemptLogin() {
+        const v = pwdInput.value;
+        if (!v || v.trim().length === 0) {
+            status.textContent = isFirstTime()
+                ? 'Set a password...'
+                : 'Enter a Password...';
+            return;
+        }
+
+        if (isFirstTime()) {
+            CORRECT = v;
+
+            loginTitle.textContent = "Meteor User";
+            status.textContent = "Password registered, please login now.";
+            pwdInput.value = '';
+
+            return;
+        }
+
+        if (v === CORRECT) {
+            status.textContent = 'Logging in';
+            setTimeout(hideOverlay, 420);
+        } else {
+            status.textContent = 'Wrong Password';
+            pwdInput.animate(
+                [
+                    { transform: 'translateX(0)' },
+                    { transform: 'translateX(-8px)' },
+                    { transform: 'translateX(8px)' },
+                    { transform: 'translateX(0)' }
+                ],
+                { duration: 360, easing: 'ease' }
+            );
+            pwdInput.value = '';
+        }
+    }
+
+    pwdInput.addEventListener('keydown', (e) => {
+        status.textContent = '';
+        if (e.key === 'Enter') attemptLogin();
+    });
+
+    function onVisibilityChange() {
+        if (document.hidden || document.visibilityState === 'hidden') {
+            showOverlay();
+        }
+    }
+
+    window.addEventListener('blur', () => {
+        setTimeout(() => {
+            if (!document.hasFocus()) showOverlay();
+        }, 80);
+    });
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    showOverlay();
+
+    return {
+        showOverlay,
+        hideOverlay,
+        attemptLogin
+    };
+})();
+
+const menu = document.getElementById('customMenu');
+const iconmenu = document.getElementById('iconMenu');
+let isMenuOpen = false;
+let isIconMenuOpen = false;
+
+function openMenu(x, y) {
+    const menuWidth = menu.offsetWidth;
+    const menuHeight = menu.offsetHeight;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    let left = x;
+    let top = y;
+
+    if (left + menuWidth > screenWidth) left -= menuWidth;
+    if (top + menuHeight > screenHeight) top -= menuHeight;
+
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+
+    showcMenu();
+}
+
+function showcMenu() {
+    menu.classList.add('show');
+    isMenuOpen = true;
+}
+
+function hideMenu() {
+    menu.classList.remove('show');
+    isMenuOpen = false;
+}
+
+function openIconMenu(x, y) {
+    const menuWidth = iconmenu.offsetWidth;
+    const menuHeight = iconmenu.offsetHeight;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    let left = x;
+    let top = y;
+
+    if (left + menuWidth > screenWidth) left -= menuWidth;
+    if (top + menuHeight > screenHeight) top -= menuHeight;
+
+    iconmenu.style.left = left + 'px';
+    iconmenu.style.top = top + 'px';
+
+    showIconMenu();
+}
+
+function showIconMenu() {
+    iconmenu.classList.add('show');
+    isIconMenuOpen = true;
+}
+
+function hideIconMenu() {
+    iconmenu.classList.remove('show');
+    isIconMenuOpen = false;
+}
+
+document.body.addEventListener('contextmenu', function (e) {
+    if (e.target.matches('.icon')) {
+        e.preventDefault();
+
+        if (isMenuOpen) {
+            hideMenu();
+        }
+
+        openIconMenu(e.clientX, e.clientY);
+    } else if (e.target.matches('.top-bar') || e.target.matches('.notch')) {
+        e.preventDefault();
+    } else {
+        e.preventDefault();
+
+        if (isIconMenuOpen) {
+            hideIconMenu();
+        }
+
+        openMenu(e.clientX, e.clientY);
+    }
+});
+
+document.body.addEventListener('click', function (e) {
+    if (!e.target.closest('.icon') && !e.target.closest('#customMenu') && !e.target.closest('#iconMenu')) {
+        hideMenu();
+        hideIconMenu();
+    }
+});
+
+document.body.addEventListener('click', function (e) {
+    if (e.ctrlKey && !isMenuOpen && !isIconMenuOpen) {
+        openMenu(e.clientX, e.clientY);
+    }
+});
+
+const menuButtons = document.querySelectorAll('.customMenu li');
+
+menuButtons.forEach(button => {
+    button.addEventListener('click', function () {
+        hideMenu();
+        hideIconMenu();
+    });
+});
+
+window.addEventListener('scroll', hideMenu);
+
+const apps = {
+    finder: { name: "Finder", url: "", icon: "https://i.postimg.cc/cCmF108P/macos-finder-icon.jpg" },
+    launchpad: { name: "Launchpad", url: "", icon: "https://i.postimg.cc/C1DmxxMd/launchpad.webp" },
+    taskmanager: { name: "Task Manager", url: "", icon: "https://i.postimg.cc/cL0ScdGN/activity-monitor-icon-200x200.jpg" },
+    // notepad: { name: "NotePad", url: "https://script.google.com/macros/s/AKfycbwTdkUf9qfk4cMfnxcYyFWIQDXwCxLEaoa4Oz7IABNkZOGr--4fwBmmlmho5zXZloi6/exec", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_Notes_icon.svg/1024px-Apple_Notes_icon.svg.png" },
+    terminal: { name: "Terminal", url: "", icon: "https://i.postimg.cc/W1Tv7sc2/2048px-GNOME-Terminal-icon-2019-svg.png" },
+    calculator: { name: "Calculator", url: "", icon: "https://i.postimg.cc/cL76sMWV/d7683090881be82d88efa4ac1d3aec74.png" },
+    settings: { name: "System Settings", url: "", icon: "https://i.postimg.cc/9FNTsjVt/Settings.webp" },
+    safari: { name: "Safari", url: "https://course.music.sbindy.com/math/hvtrs8%2F-hvmn.aade-x%601dd6bff", icon: "https://i.postimg.cc/SRryH9P3/2048px-Safari-2020-logo-svg.png" },
+    meteor: { name: "About MeteorOS", url: "", icon: "https://i.postimg.cc/1ts22d1L/meteor-client.png" },
+    appstore: { name: "App Store", url: "", icon: "https://i.postimg.cc/QMgx9N5t/1024px-App-Store-(i-OS)-svg.png" },
+    finderd: { name: "Downloads", url: "", icon: "" }
+};
+
+const appStoreApps = {
+    chat: { name: "Chat", url: "https://docs.google.com/document/d/1ONv3M4u6U4PiP5LN41-kIVycj-7trHpKEs9tjnOMQvY/edit", icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon-2023q4.ico" },
+    space: { name: "Rammerhead", url: "https://secretsubdomain1.caribbeanpremierhotels.com", icon: "https://secretsubdomain1.caribbeanpremierhotels.com/logo.png" },
+    dogeub: { name: "DogeUB", url: "https://vcuusa.coaching-tour.com/", icon: "https://i.postimg.cc/MGGJhtGm/130938124-s-200-v-4.png" },
+    // pcl: { name: "Plain Craft Launcher", url: "https://script.google.com/macros/s/AKfycbzu1cvKZe_Esb_mjfSaG9EiBZ_w57T_Ue1_f-Te4_Kktf2axGZTUa2ILZ9eMda4cJnw7Q/exec", icon: "https://raw.githubusercontent.com/PCL-Community/PCL2-CE/master/Plain%20Craft%20Launcher%202/Images/icon.ico" },
+    pvz2: { name: "PVZ 2", url: "https://tsisveryniche.tomayre.com/resources/semag/pvzge/index.html", icon: "https://i.postimg.cc/HkzCZFTj/Plants-Vs-Zombies-2-It-s-About-Time-Square-Icon-(Versions-4-5-1).png" },
+    cookieclicker: { name: "Cookie Clicker", url: "https://tsisveryniche.tomayre.com/resources/semag/cookieclicker/index.html", icon: "https://i.postimg.cc/SKKbwVKT/Z1MOuui-D05ZN5Lk-Vm-MEv-KF0mq-Ac-Fkna-Q2j8s4d-Zi-O-LSPQX4EEA3RVJdl-QEtxe96ok.png" },
+    selenite: { name: "Selenite", url: "https://tsisveryniche.tomayre.com/", icon: "https://i.postimg.cc/L8DMCGmL/favicon.png" },
+    //   python: { name: "Python", url: "https://trinket.io/embed/python3", icon: "https://img.icons8.com/?size=512&id=13441&format=png" },
+    //   java: { name: "Java", url: "https://www.programiz.com/java-programming/online-compiler/", icon: "https://img.icons8.com/color/512/java-coffee-cup-logo.png" },
+    win11: { name: "Windows 11", url: "https://tsisveryniche.tomayre.com/resources/sppa/11/index.html", icon: "https://i.postimg.cc/Z5Hh7XJx/ne6ukkej06t71.png" },
+    google: { name: "Google", url: "https://www.google.com/?igu=1", icon: "https://i.postimg.cc/wBBYSFBR/768px-Google-G-logo-svg.png" },
+    // linkopener: { name: "Link Opener", url: "https://script.google.com/a/macros/lps-students.org/s/AKfycbzc3aJF8-LQCcEzZ85Y98jIHxaRwV6pd0LzMhS0iWDr0GeyIF55FHiDlIQxWiNlerAIug/exec", icon: "https://web.kamihq.com/web/images/openwith.svg" }
+};
+
+const runningApps = {};
+const dock = document.getElementById("dock");
+const dockleft = document.getElementById("dockleft");
+let maxZ = 100;
+
+for (const key in apps) addDockItem(key);
+
+// dock.addEventListener("dragover", e => {
+//     e.preventDefault();
+//     const dragging = document.querySelector(".dragging");
+//     const afterElement = getDragAfterElement(dock, e.clientX);
+//     if (afterElement == null) {
+//         dock.appendChild(dragging);
+//     } else {
+//         dock.insertBefore(dragging, afterElement);
+//     }
+// });
+
+// function getDragAfterElement(container, x) {
+//     const draggableElements = [...container.querySelectorAll(".dock-item:not(.dragging)")];
+//     return draggableElements.reduce((closest, child) => {
+//         const box = child.getBoundingClientRect();
+//         const offset = x - box.left - box.width / 2;
+//         if (offset < 0 && offset > closest.offset) {
+//             return { offset: offset, element: child };
+//         } else {
+//             return closest;
+//         }
+//     }, { offset: Number.NEGATIVE_INFINITY }).element;
+// }
+
+function addDockItem(key) {
+    if (key === "terminal" || key === "taskmanager" || key === "finderd") return;
+    if (document.querySelector(`.dock-item[data-app="${key}"]`)) return;
+    const item = document.createElement("div");
+    item.className = "dock-item";
+    item.setAttribute("hover-text", apps[key].name);
+    item.dataset.app = key;
+    // item.draggable = true;
+
+    const img = document.createElement("img");
+    img.src = apps[key].icon;
+    img.alt = apps[key].name;
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.borderRadius = "13px";
+    item.appendChild(img);
+
+    const indicator = document.createElement("span");
+    item.appendChild(indicator);
+
+    dockleft.appendChild(item);
+
+    // item.addEventListener("dragstart", () => {
+    //     item.classList.add("dragging");
+    // });
+    // item.addEventListener("dragend", () => {
+    //     item.classList.remove("dragging");
+    // });
+
+item.addEventListener("click", () => {
+    const win = runningApps[key];
+    if (!win) {
+        createAppWindow(key);
+        finderText.textContent = apps[key].name;
+        return;
+    }
+
+    if (win.dataset.minimized === "true") {
+        const iframe = win.querySelector("iframe, embed, object");
+
+        win.style.display = "flex";
+        win.style.transform = "scale(0.8)";
+        win.style.opacity = "0";
+        win.dataset.minimized = "false";
+
+        requestAnimationFrame(() => {
+            win.style.transition = "transform 0.3s ease, opacity 0.3s ease";
+            win.style.transform = "scale(1)";
+            win.style.opacity = "1";
+        });
+
+        setTimeout(() => {
+            win.style.transition = "";
+            win.style.pointerEvents = "auto";
+
+            if (iframe && win.dataset.savedHeight) {
+                iframe.style.height = win.dataset.savedHeight + "px";
+            }
+
+            item.classList.add("active");
+        }, 300);
+    } else {
+        win.style.zIndex = ++maxZ;
+    }
+});
+
+}
+
+// createAppWindow("Example", "https://example.com/");
+
+function createAppWindow(key, customUrl = null) {
+    let app = apps[key];
+
+    if (customUrl) {
+        app = {
+            name: key,
+            url: customUrl
+        };
+    }
+
+    if (!app) return console.error(`App "${key}" not found`);
+
+let existingWindow = document.querySelector(`.app-window[data-app="${key}"]`);
+
+if (existingWindow) {
+    const iframe = existingWindow.querySelector("iframe, embed, object");
+
+    if (existingWindow.dataset.minimized === "true") {
+        existingWindow.style.display = "flex";
+        existingWindow.style.opacity = "0";
+        existingWindow.style.transform = "scale(0.8)";
+        existingWindow.dataset.minimized = "false";
+        existingWindow.style.pointerEvents = "none";
+
+        requestAnimationFrame(() => {
+            existingWindow.style.transition = "transform 0.3s ease, opacity 0.3s ease";
+            existingWindow.style.transform = "scale(1)";
+            existingWindow.style.opacity = "1";
+        });
+
+        setTimeout(() => {
+            existingWindow.style.transition = "";
+            existingWindow.style.pointerEvents = "auto";
+
+            if (iframe && existingWindow.dataset.savedHeight) {
+                iframe.style.height = existingWindow.dataset.savedHeight + "px";
+            }
+
+            existingWindow.classList.remove("hide");
+            existingWindow.style.zIndex = ++maxZ;
+        }, 300);
+    } else {
+        existingWindow.style.zIndex = ++maxZ;
+    }
+
+    return;
+}
+
+    const win = document.createElement("div");
+    win.className = "app-window hide";
+    win.dataset.app = key;
+    if (key === "taskmanager") {
+        win.innerHTML = `
+      <div class="app-titlebar">
+        <div class="name">${app.name}</div>
+        <div class="controls">
+    <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+    <div class="minimize" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+    <div class="maximize"><i class="fa-solid fa-expand"></i></div>
+        </div>
+      </div>
+      <div class="task-list" style="flex:1;padding:10px;overflow:auto;"></div>
+    `;
+    } else if (key === "safari") {
+win.innerHTML = `
+  <div class="app-titlebar">
+    <div class="name">${app.name}</div>
+    <div class="controls">
+      <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+      <div class="minimize" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+      <div class="maximize"><i class="fa-solid fa-expand"></i></div>
+    </div>
+  </div>
+  <iframe class="app-iframe"
+          src="https://course.music.sbindy.com/math/hvtrs8%2F-hvmn.aade-x%601dd6bff"
+          allow="fullscreen;"
+          allowfullscreen
+          referrerpolicy="no-referrer">
+  </iframe>
+`;
+
+// const iframe = document.getElementById('hiddenIframe');
+
+// if (iframe) {
+//     iframe.remove();
+// }
+
+    } else if (key === "calculator") {
+        // noti({
+        //     message: "Calculator is under development",
+        //     sender: "Finder",
+        //     time: "Now",
+        //     image: "https://i.postimg.cc/cL76sMWV/d7683090881be82d88efa4ac1d3aec74.png"
+        // });
+        return;
+    } else if (key === "appstore") {
+        openAppStore();
+        return;
+    } else if (key === "launchpad") {
+        return;
+    } else if (key === "finder") {
+        win.innerHTML = `
+      <div class="app-titlebar" style="background: linear-gradient(to right, transparent 0, transparent 220px, #efeff5 220px, #efeff5 100%);">
+        <div class="name"></div>
+        <div class="controls">&nbsp;&nbsp;
+    <div class="close" title="Close" style="position: relative; top: 12px;"><i class="fa-solid fa-xmark"></i></div>
+    <div class="minimize" title="Minimize" style="position: relative; top: 12px;"><i class="fa-solid fa-minus"></i></div>
+    <div class="maximize" style="position: relative; top: 12px;"><i class="fa-solid fa-expand"></i></div>
+        </div>
+      </div>
+      <embed class="app-iframe" src="https://andyjiang.neocities.org/finder" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
+    `;
+    } else if (key === "finderd") {
+        win.innerHTML = `
+      <div class="app-titlebar" style="background: linear-gradient(to right, transparent 0, transparent 220px, #efeff5 220px, #efeff5 100%);">
+        <div class="name"></div>
+        <div class="controls">&nbsp;&nbsp;
+    <div class="close" title="Close" style="position: relative; top: 12px;"><i class="fa-solid fa-xmark"></i></div>
+    <div class="minimize" title="Minimize" style="position: relative; top: 12px;"><i class="fa-solid fa-minus"></i></div>
+    <div class="maximize" style="position: relative; top: 12px;"><i class="fa-solid fa-expand"></i></div>
+        </div>
+      </div>
+      <embed class="app-iframe" src="https://andyjiang.neocities.org/finder?downloads" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
+    `;
+    } else if (key === "terminal") {
+        win.innerHTML = `
+      <div class="app-titlebar">
+        <div class="name">${app.name}</div>
+        <div class="controls">
+    <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+    <div class="minimize" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+    <div class="maximize"><i class="fa-solid fa-expand"></i></div>
+        </div>
+      </div>
+      <div class="terminal"></div>
+    `;
+    } else if (key === "meteor") {
+        win.innerHTML = `
+      <div class="app-titlebar">
+        <div class="name">${app.name}</div>
+        <div class="controls">
+    <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+    <div class="minimize" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+    <div class="maximize"><i class="fa-solid fa-expand"></i></div>
+        </div>
+      </div>
+<div class="about-content">
+<ul>
+  <li><i class="fas fa-code"></i>&nbsp; Version: 1.7.0</li>
+  <li><i class="fas fa-desktop"></i>&nbsp; Name: MeteorOS 1.7.0</li>
+  <li><i class="fas fa-laptop-code"></i>&nbsp; Operating System: MacOS</li>
+  <li><i class="fas fa-user"></i>&nbsp; Published By: Meteor</li>
+  <li><i class="fas fa-calendar-alt"></i>&nbsp; Published Time: Dec 11 2025</li>
+  <li><i class="fas fa-calendar-check"></i>&nbsp; Latest published time: Dec 11 2025</li>
+  <li><i class="fas fa-file-archive"></i>&nbsp; File type: ZIP, html</li>
+  <li><i class="fas fa-file"></i>&nbsp; File size: 72.6 MB</li>
+  <li><i class="fas fa-hashtag"></i>&nbsp; Version ID: 25w50a</li>
+  <li><i class="fas fa-file"></i>&nbsp; Access to local files: No</li>
+  <li><i class="fas fa-camera"></i>&nbsp; Access to camera: Yes</li>
+  <li><i class="fas fa-map-marker-alt"></i>&nbsp; Access to your location: Yes</li>
+  <li><i class="fas fa-wave-square"></i>&nbsp; Access to motion sensors: Yes</li>
+  <li><i class="fas fa-clipboard"></i>&nbsp; Access to clipboard: Yes</li>
+  <li><i class="fa-brands fa-usb"></i>&nbsp; Access to USB devices: Yes</li>
+  <li><i class="fas fa-volume-up"></i>&nbsp; Access to sounds: Yes</li>
+  <li><i class="fas fa-code"></i>&nbsp; Access to JavaScript: Yes</li>
+  <li><i class="fas fa-external-link-alt"></i>&nbsp; Access to pop-ups and redirects: Yes</li>
+  <li><i class="fas fa-user-slash"></i>&nbsp; Access to third-party sign-in: No</li>
+  <li><i class="fa-solid fa-laptop"></i>&nbsp; Access to your device use: No</li></ul>
+</div>
+    `;
+    } else if (key === "settings") {
+        win.innerHTML = `
+      <div class="app-titlebar" style="background: linear-gradient(to right, transparent 0, transparent 280px, #fff 280px, #fff 100%);">
+        <div class="name"></div>
+        <div class="controls">&nbsp;&nbsp;
+    <div class="close" title="Close" style="position: relative; top: 12px;"><i class="fa-solid fa-xmark"></i></div>
+    <div class="minimize" title="Minimize" style="position: relative; top: 12px;"><i class="fa-solid fa-minus"></i></div>
+    <div class="maximize" style="position: relative; top: 12px;"><i class="fa-solid fa-expand"></i></div>
+    <i style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default; position: relative; top: 12px; left: 240px;" class="fa-solid fa-chevron-left"></i>
+    <i style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default; position: relative; top: 12px; left: 260px;" class="fa-solid fa-chevron-right"></i>
+    <b style="position: relative; top: 12px; left: 280px;">System Settings</b>
+        </div>
+      </div>
+      <embed class="app-iframe" src="https://andyjiang.neocities.org/settings" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
+    `;
+    } else {
+        win.innerHTML = `
+      <div class="app-titlebar">
+        <div class="name">${app.name}</div>
+        <div class="controls">
+    <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+    <div class="minimize" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+    <div class="maximize"><i class="fa-solid fa-expand"></i></div>
+        </div>
+      </div>
+      <embed class="app-iframe" src="${app.url}" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
+    `;
+    }
+
+document.body.appendChild(win);
+runningApps[key] = win;
+
+const dockItem = document.querySelector(`.dock-item[data-app="${key}"]`);
+
+if (!customUrl && dockItem) {
+    dockItem.classList.add("active");
+}
+
+    requestAnimationFrame(() => { win.classList.remove("hide"); win.classList.add("show"); });
+
+    const titlebar = win.querySelector(".app-titlebar");
+    const closeBtn = win.querySelector(".close");
+    const minBtn = win.querySelector(".minimize");
+    const maxBtn = win.querySelector(".maximize");
+
+    closeBtn.addEventListener("click", () => {
+        win.classList.remove("show");
+        win.classList.add("hide");
+            if(finderText.textContent == app.name || finderText.textContent == "Chrome" || finderText.textContent == "Google" ) {
+                finderText.textContent = "Finder";
+            }
+        setTimeout(() => {
+            win.remove();
+            if (!customUrl && dockItem) {
+                dockItem.classList.remove("active");
+            }
+            delete runningApps[key];
+        }, 300);
+    });
+
+minBtn.addEventListener("click", () => {
+    const iframe = win.querySelector("iframe, embed, object");
+
+    if (iframe) win.dataset.savedHeight = iframe.offsetHeight;
+
+    win.style.transition = "transform 0.3s ease, opacity 0.3s ease";
+    win.style.transform = "scale(0.8)";
+    win.style.opacity = "0";
+    win.style.pointerEvents = "none";
+
+    setTimeout(() => {
+        win.dataset.minimized = "true";
+        win.style.transition = "";
+    }, 300);
+});
+
+
+maxBtn.addEventListener("click", () => {
+    if (win.dataset.maximized === "true") {
+        win.style.width = win.dataset.prevWidth;
+        win.style.height = win.dataset.prevHeight;
+        win.style.top = win.dataset.prevTop;
+        win.style.left = win.dataset.prevLeft;
+        win.dataset.maximized = "false";
+    } else {
+        win.dataset.prevWidth = win.style.width;
+        win.dataset.prevHeight = win.style.height;
+        win.dataset.prevTop = win.style.top;
+        win.dataset.prevLeft = win.style.left;
+
+        win.style.width = window.innerWidth + "px";
+        win.style.height = (window.innerHeight - 20) + "px";
+        win.style.top = "28px";
+        win.style.left = "0px";
+        win.dataset.maximized = "true";
+        finderText.textContent = app.name;
+    }
+    win.style.zIndex = ++maxZ;
+});
+
+const maxMenu = document.createElement("div");
+
+const menuTitle = document.createElement("div");
+menuTitle.textContent = "Move & Resize";
+Object.assign(menuTitle.style, {
+    fontSize: "12px",
+    opacity: "0.9",
+    marginBottom: "6px",
+    paddingLeft: "4px",
+    userSelect: "none",
+    color: "#333"
+});
+
+const grid = document.createElement("div");
+Object.assign(grid.style, {
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)",
+    gap: "6px"
+});
+
+function createLayoutBox(action) {
+    const box = document.createElement("div");
+    box.dataset.action = action;
+
+    Object.assign(box.style, {
+        width: "48px",
+        height: "32px",
+        borderRadius: "6px",
+        background: "rgba(200,200,200,0.25)",
+        position: "relative",
+        cursor: "pointer",
+        transition: "background 0.2s"
+    });
+
+    box.onmouseenter = () => box.style.background = "rgba(200,200,200,0.45)";
+    box.onmouseleave = () => box.style.background = "rgba(200,200,200,0.25)";
+
+    return box;
+}
+
+const leftBox = createLayoutBox("left");
+leftBox.appendChild(Object.assign(document.createElement("div"), {
+    style: `
+        position:absolute;
+        left:4px; top:4px;
+        width:16px; height:24px;
+        background:#555;
+        border-radius:4px;
+    `
+}));
+
+const rightBox = createLayoutBox("right");
+rightBox.appendChild(Object.assign(document.createElement("div"), {
+    style: `
+        position:absolute;
+        right:4px; top:4px;
+        width:16px; height:24px;
+        background:#555;
+        border-radius:4px;
+    `
+}));
+
+const fullBox = createLayoutBox("fullscreen");
+fullBox.appendChild(Object.assign(document.createElement("div"), {
+    style: `
+        position:absolute;
+        inset:4px;
+        background:#555;
+        border-radius:4px;
+    `
+}));
+
+const restoreBox = createLayoutBox("restore");
+const r1 = document.createElement("div");
+const r2 = document.createElement("div");
+
+Object.assign(r1.style, {
+    position: "absolute",
+    left: "6px",
+    top: "6px",
+    width: "18px",
+    height: "14px",
+    border: "2px solid #555",
+    borderRadius: "3px"
+});
+
+Object.assign(r2.style, {
+    position: "absolute",
+    right: "6px",
+    bottom: "6px",
+    width: "18px",
+    height: "14px",
+    border: "2px solid #555",
+    borderRadius: "3px",
+    opacity: ".6"
+});
+
+restoreBox.append(r1, r2);
+
+grid.append(leftBox, rightBox, fullBox, restoreBox);
+
+const arrangeTitle = document.createElement("div");
+arrangeTitle.textContent = "Arrange & Movement";
+Object.assign(arrangeTitle.style, {
+    fontSize: "12px",
+    opacity: "0.9",
+    margin: "10px 0 6px 4px",
+    userSelect: "none",
+    color: "#333"
+});
+
+const arrangeGrid = document.createElement("div");
+Object.assign(arrangeGrid.style, {
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)",
+    gap: "6px"
+});
+
+function createCornerBox(corner) {
+    const box = createLayoutBox(corner);
+    const icon = document.createElement("div");
+
+    Object.assign(icon.style, {
+        width: "12px",
+        height: "12px",
+        borderLeft: "2px solid #555",
+        borderTop: "2px solid #555",
+        position: "absolute"
+    });
+
+    switch(corner) {
+        case "top-left":
+            icon.style.left = "6px";
+            icon.style.top = "6px";
+            icon.style.transform = "rotate(0deg)";
+            break;
+        case "top-right":
+            icon.style.right = "6px";
+            icon.style.top = "6px";
+            icon.style.transform = "rotate(90deg)";
+            break;
+        case "bottom-left":
+            icon.style.left = "6px";
+            icon.style.bottom = "6px";
+            icon.style.transform = "rotate(270deg)";
+            break;
+        case "bottom-right":
+            icon.style.right = "6px";
+            icon.style.bottom = "6px";
+            icon.style.transform = "rotate(180deg)";
+            break;
+    }
+
+    box.appendChild(icon);
+    return box;
+}
+
+["top-left","top-right","bottom-left","bottom-right"].forEach(corner => {
+    arrangeGrid.appendChild(createCornerBox(corner));
+});
+
+Object.assign(maxMenu.style, {
+    position: "fixed",
+    padding: "10px",
+    borderRadius: "10px",
+    background: "rgba(230,230,230,0.95)",
+    display: "none",
+    zIndex: 999999,
+    color: "#333",
+    boxShadow: "0 10px 30px rgba(0,0,0,.25)"
+});
+
+maxMenu.append(menuTitle, grid, arrangeTitle, arrangeGrid);
+document.body.appendChild(maxMenu);
+
+function positionMaxMenu() {
+    const rect = maxBtn.getBoundingClientRect();
+    maxMenu.style.top = rect.bottom + 10 + "px";
+    maxMenu.style.left = rect.left - 20 + "px";
+}
+
+let hoverTimer;
+
+maxBtn.addEventListener("mouseenter", () => {
+    hoverTimer = setTimeout(() => {
+        positionMaxMenu();
+        maxMenu.style.display = "block";
+    }, 250);
+});
+
+maxBtn.addEventListener("mouseleave", () => {
+    clearTimeout(hoverTimer);
+    setTimeout(() => {
+        if (!maxMenu.matches(":hover")) maxMenu.style.display = "none";
+    }, 350);
+});
+
+maxMenu.addEventListener("mouseleave", () => maxMenu.style.display = "none");
+
+maxMenu.addEventListener("click", (e) => {
+    const box = e.target.closest("[data-action]");
+    if (!box) return;
+
+    if (!win.dataset.maximized) {
+        win.dataset.prevWidth = win.style.width;
+        win.dataset.prevHeight = win.style.height;
+        win.dataset.prevTop = win.style.top;
+        win.dataset.prevLeft = win.style.left;
+    }
+
+    const action = box.dataset.action;
+    const fullHeight = window.innerHeight - 20;
+    const fullWidth = window.innerWidth;
+
+    switch (action) {
+        case "left":
+            win.style.width = fullWidth / 2 + "px";
+            win.style.height = fullHeight - 80 + "px";
+            win.style.top = "28px";
+            win.style.left = "0";
+            win.dataset.maximized = "false";
+            break;
+        case "right":
+            win.style.width = fullWidth / 2 + "px";
+            win.style.height = fullHeight - 80 + "px";
+            win.style.top = "28px";
+            win.style.left = fullWidth / 2 + "px";
+            win.dataset.maximized = "false";
+            break;
+        case "fullscreen":
+            win.style.width = fullWidth + "px";
+            win.style.height = fullHeight + "px";
+            win.style.top = "28px";
+            win.style.left = "0";
+            win.dataset.maximized = "true";
+            break;
+        case "restore":
+            win.style.width = win.dataset.prevWidth;
+            win.style.height = win.dataset.prevHeight;
+            win.style.top = win.dataset.prevTop;
+            win.style.left = win.dataset.prevLeft;
+            win.dataset.maximized = "false";
+            break;
+        case "top-left":
+            win.style.top = "28px";
+            win.style.left = "0px";
+            break;
+        case "top-right":
+            win.style.top = "28px";
+            win.style.left = fullWidth - win.offsetWidth + "px";
+            break;
+        case "bottom-left":
+            win.style.top = fullHeight - 52 - win.offsetHeight + "px";
+            win.style.left = "0px";
+            break;
+        case "bottom-right":
+            win.style.top = fullHeight - 52 - win.offsetHeight + "px";
+            win.style.left = fullWidth - win.offsetWidth + "px";
+            break;
+    }
+
+    maxMenu.style.display = "none";
+    win.style.zIndex = ++maxZ;
+});
+
+
+const snapPreview = document.createElement("div");
+snapPreview.style.position = "fixed";
+snapPreview.style.background = "rgba(255,255,255,0.18)";
+snapPreview.style.border = "1px solid rgba(255,255,255,0.35)";
+snapPreview.style.borderRadius = "10px";
+snapPreview.style.zIndex = 999998;
+snapPreview.style.pointerEvents = "none";
+// snapPreview.style.backdropFilter = "blur(2px)";
+snapPreview.style.display = "none";
+document.body.appendChild(snapPreview);
+
+let dragging = false, offsetX = 0, offsetY = 0;
+let overlay = null;
+
+titlebar.addEventListener("mousedown", e => {
+    if (e.target.closest(".controls")) return;
+
+    if (win.dataset.maximized === "true") return;
+
+    dragging = true;
+    finderText.textContent = app.name;
+
+    offsetX = e.clientX - win.offsetLeft;
+    offsetY = e.clientY - win.offsetTop;
+
+    win.style.zIndex = ++maxZ;
+
+    overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.zIndex = 999999;
+    overlay.style.background = "transparent";
+    document.body.appendChild(overlay);
+
+    document.querySelectorAll(".app-window .controls div").forEach(btn => {
+        btn.classList.add("discon");
+    });
+
+    win.querySelectorAll(".app-window .controls div").forEach(btn => {
+        btn.classList.remove("discon");
+    });
+
+    win.style.zIndex = ++maxZ;
+});
+
+document.addEventListener("mousemove", e => {
+    if (!dragging) return;
+
+    let targetX = e.clientX - offsetX;
+    let targetY = e.clientY - offsetY;
+
+    const maxX = window.innerWidth - win.offsetWidth;
+    const maxY = window.innerHeight - win.offsetHeight;
+
+    targetX = Math.min(Math.max(0, targetX), maxX);
+    targetY = Math.max(targetY, 0);
+
+    win.style.left = targetX + "px";
+    win.style.top = targetY + "px";
+
+    if (targetY < 28) {
+        win.style.top = "28px";
+    }
+
+const m = 1;
+const w = window.innerWidth;
+const h = window.innerHeight;
+
+snapPreview.style.display = "none";
+
+const nearTop = targetY <= m;
+const nearLeft = targetX <= m;
+const nearRight = targetX + win.offsetWidth >= w - m;
+const nearBottom = targetY + win.offsetHeight >= h - m;
+
+if (nearLeft && nearTop) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = "0px";
+    snapPreview.style.top = "28px";
+    snapPreview.style.width = w / 2 + "px";
+    snapPreview.style.height = (h - 20) / 2 + "px";
+    return;
+}
+
+if (nearRight && nearTop) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = w / 2 + "px";
+    snapPreview.style.top = "28px";
+    snapPreview.style.width = w / 2 + "px";
+    snapPreview.style.height = (h - 20) / 2 + "px";
+    return;
+}
+
+if (nearLeft && nearBottom) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = "0px";
+    snapPreview.style.top = 28 - 80 + (h - 20) / 2 + "px";
+    snapPreview.style.width = w / 2 + "px";
+    snapPreview.style.height = (h - 20) / 2 + "px";
+    return;
+}
+
+if (nearRight && nearBottom) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = w / 2 + "px";
+    snapPreview.style.top = 28 - 80 + (h - 20) / 2 + "px";
+    snapPreview.style.width = w / 2 + "px";
+    snapPreview.style.height = (h - 20) / 2 + "px";
+    return;
+}
+
+if (nearTop) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = "0px";
+    snapPreview.style.top = "28px";
+    snapPreview.style.width = w + "px";
+    snapPreview.style.height = (h - 100) + "px";
+    return;
+}
+
+if (nearBottom) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = "0px";
+    snapPreview.style.top = "28px";
+    snapPreview.style.width = w + "px";
+    snapPreview.style.height = (h - 100) + "px";
+    return;
+}
+
+if (nearLeft) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = "0px";
+    snapPreview.style.top = "28px";
+    snapPreview.style.width = w / 2 + "px";
+    snapPreview.style.height = (h - 100) + "px";
+    return;
+}
+
+if (nearRight) {
+    snapPreview.style.display = "block";
+    snapPreview.style.left = w / 2 + "px";
+    snapPreview.style.top = "28px";
+    snapPreview.style.width = w / 2 + "px";
+    snapPreview.style.height = (h - 100) + "px";
+    return;
+}
+});
+
+document.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false;
+
+    if (overlay) {
+        overlay.remove();
+        overlay = null;
+    }
+
+    const maxX = window.innerWidth - win.offsetWidth;
+    const maxY = window.innerHeight - win.offsetHeight;
+
+    if (win.offsetTop < 28) {
+        win.style.top = "28px";
+    }
+    if (win.offsetLeft < 0) {
+        win.style.left = "0px";
+    } else if (win.offsetLeft > maxX) {
+        win.style.left = maxX + "px";
+    }
+
+    if (snapPreview.style.display !== "none") {
+        win.style.left = snapPreview.style.left;
+        win.style.top = snapPreview.style.top;
+        win.style.width = snapPreview.style.width;
+        win.style.height = snapPreview.style.height;
+        win.dataset.maximized = "false";
+        snapPreview.style.display = "none";
+        return;
+    }
+
+    snapPreview.style.display = "none";
+});
+
+
+const resizeEdges = ["top", "right", "bottom", "left"];
+const resizeCorners = [
+    "top-left", "top-right", "bottom-left", "bottom-right"
+];
+
+const cursors = {
+    "top-left": "url(https://andyjiang.neocities.org/resizenorthwestsoutheast.svg) 16 16, nesw-resize",
+    "top-right": "url(https://andyjiang.neocities.org/resizenortheastsouthwest.svg) 16 16, nwse-resize",
+    "bottom-left": "url(https://andyjiang.neocities.org/resizenortheastsouthwest.svg) 16 16, nwse-resize",
+    "bottom-right": "url(https://andyjiang.neocities.org/resizenorthwestsoutheast.svg) 16 16, nesw-resize",
+    "top": "url(https://andyjiang.neocities.org/resizenorthsouth.svg) 16 16, ns-resize",
+    "bottom": "url(https://andyjiang.neocities.org/resizenorthsouth.svg) 16 16, ns-resize",
+    "left": "url(https://andyjiang.neocities.org/resizewesteast.svg) 16 16, ew-resize",
+    "right": "url(https://andyjiang.neocities.org/resizewesteast.svg) 16 16, ew-resize"
+};
+
+[...resizeEdges, ...resizeCorners].forEach(edge => {
+    const handle = document.createElement("div");
+    handle.className = `resize-handle ${edge}`;
+    handle.style.position = "absolute";
+    handle.style.cursor = cursors[edge];
+    win.appendChild(handle);
+});
+
+let resizing = false;
+let resizeDir = null;
+let startX, startY, startWidth, startHeight, startTop, startLeft;
+
+win.querySelectorAll(".resize-handle").forEach(handle => {
+    handle.addEventListener("mousedown", e => {
+        if (win.dataset.maximized === "true") return;
+        e.stopPropagation();
+        e.preventDefault();
+        resizing = true;
+        dragging = false;
+        finderText.textContent = app.name;
+        resizeDir = handle.classList[1];
+
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = win.offsetWidth;
+        startHeight = win.offsetHeight;
+        startTop = win.offsetTop;
+        startLeft = win.offsetLeft;
+
+        win.style.zIndex = ++maxZ;
+
+        overlay = document.createElement("div");
+        overlay.style.position = "fixed";
+        overlay.style.top = 0;
+        overlay.style.left = 0;
+        overlay.style.width = "100%";
+        overlay.style.height = "100%";
+        overlay.style.zIndex = 999999;
+        overlay.style.cursor = cursors[resizeDir];
+        document.body.appendChild(overlay);
+    });
+});
+
+
+document.addEventListener("mousemove", e => {
+    if (!resizing) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    let newWidth = startWidth;
+    let newHeight = startHeight;
+    let newLeft = startLeft;
+    let newTop = startTop;
+
+    const minWidth = 250;
+    const minHeight = 32;
+
+    switch (resizeDir) {
+        case "right": newWidth = Math.max(minWidth, startWidth + dx); break;
+        case "bottom": newHeight = Math.max(minHeight, startHeight + dy); break;
+        case "left":
+            newWidth = Math.max(minWidth, startWidth - dx);
+            newLeft = startLeft + dx;
+            break;
+        case "top":
+            newHeight = Math.max(minHeight, startHeight - dy);
+            newTop = startTop + dy;
+            break;
+        case "top-left":
+            newWidth = Math.max(minWidth, startWidth - dx);
+            newLeft = startLeft + dx;
+            newHeight = Math.max(minHeight, startHeight - dy);
+            newTop = startTop + dy;
+            break;
+        case "top-right":
+            newWidth = Math.max(minWidth, startWidth + dx);
+            newHeight = Math.max(minHeight, startHeight - dy);
+            newTop = startTop + dy;
+            break;
+        case "bottom-left":
+            newWidth = Math.max(minWidth, startWidth - dx);
+            newLeft = startLeft + dx;
+            newHeight = Math.max(minHeight, startHeight + dy);
+            break;
+        case "bottom-right":
+            newWidth = Math.max(minWidth, startWidth + dx);
+            newHeight = Math.max(minHeight, startHeight + dy);
+            break;
+    }
+
+    win.style.width = newWidth + "px";
+    win.style.height = newHeight + "px";
+    win.style.left = newLeft + "px";
+    win.style.top = newTop + "px";
+});
+
+document.addEventListener("mouseup", () => {
+    if (resizing) {
+        resizing = false;
+        resizeDir = null;
+        if (overlay) {
+            overlay.remove();
+            overlay = null;
+        }
+    }
+});
+
+
+    if (key === "taskmanager") updateTaskManager();
+    if (key === "terminal") initTerminal(win.querySelector(".terminal"));
+
+    document.querySelectorAll(".app-window .controls div").forEach(btn => {
+        btn.classList.add("discon");
+    });
+
+    win.querySelectorAll(".app-window .controls div").forEach(btn => {
+        btn.classList.remove("discon");
+    });
+
+    win.style.zIndex = ++maxZ;
+}
+
+let allWindowsOverlay = null;
+let allWindowsActive = false;
+
+function showAllWindows() {
+    if (allWindowsActive) return; 
+    allWindowsActive = true;
+
+    allWindowsOverlay = document.createElement("div");
+    allWindowsOverlay.id = "all-windows-overlay";
+    allWindowsOverlay.style.position = "fixed";
+    allWindowsOverlay.style.top = "0";
+    allWindowsOverlay.style.left = "0";
+    allWindowsOverlay.style.width = "100%";
+    allWindowsOverlay.style.height = "100%";
+    allWindowsOverlay.style.backdropFilter = "blur(12px)";
+    allWindowsOverlay.style.background = "rgba(0,0,0,0.35)";
+    allWindowsOverlay.style.zIndex = "9999";
+    allWindowsOverlay.style.display = "flex";
+    allWindowsOverlay.style.flexWrap = "wrap";
+    allWindowsOverlay.style.alignItems = "center";
+    allWindowsOverlay.style.justifyContent = "center";
+    allWindowsOverlay.style.gap = "30px";
+    allWindowsOverlay.style.padding = "40px";
+    document.body.appendChild(allWindowsOverlay);
+
+    Object.keys(runningApps).forEach(key => {
+        const win = runningApps[key];
+
+        let W = win.offsetWidth;
+        let H = win.offsetHeight;
+
+        const isMinimized = win.dataset.minimized === "true";
+
+        if (isMinimized) {
+            W = Math.max(W, 150);
+            H = Math.max(H, 100);
+        }
+
+        const MAX_W = 380;
+        const MAX_H = 260;
+        const scale = Math.min(MAX_W / W, MAX_H / H);
+
+        const preview = document.createElement("div");
+        preview.className = "window-preview";
+        preview.style.position = "relative";
+        preview.style.width = W * scale + "px";
+        preview.style.height = H * scale + "px";
+        preview.style.border = "2px solid rgba(255,255,255,0.3)";
+        preview.style.borderRadius = "10px";
+        preview.style.overflow = "hidden";
+        preview.style.cursor = "url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default;";
+        preview.style.background = "#00000020";
+        preview.style.boxShadow = "0 10px 30px rgba(0,0,0,0.35)";
+        preview.style.transition = "transform .2s";
+
+        preview.onmouseenter = () => preview.style.transform = "scale(1.05)";
+        preview.onmouseleave = () => preview.style.transform = "scale(1)";
+
+        const clone = win.cloneNode(true);
+        clone.style.position = "absolute";
+        clone.style.top = "0";
+        clone.style.left = "0";
+        clone.style.width = W + "px";
+        clone.style.height = H + "px";
+        clone.style.transform = `scale(${scale})`;
+        clone.style.transformOrigin = "top left";
+        clone.style.pointerEvents = "none";
+
+        preview.appendChild(clone);
+        allWindowsOverlay.appendChild(preview);
+
+preview.addEventListener("click", () => {
+    if (isMinimized) {
+        win.dataset.minimized = "false";
+        win.style.pointerEvents = "auto";
+
+        win.style.transition = "transform 0.3s ease, opacity 0.3s ease";
+        win.style.transform = "scale(1)";
+        win.style.opacity = "1";
+
+        const iframe = win.querySelector("iframe, embed, object");
+        if (iframe && win.dataset.savedHeight) {
+            iframe.style.height = win.dataset.savedHeight + "px";
+        }
+
+        setTimeout(() => {
+            win.style.transition = "";
+        }, 300);
+    }
+
+    win.style.zIndex = ++maxZ;
+
+    allWindowsOverlay.style.transition = "opacity 0.2s ease";
+    allWindowsOverlay.style.opacity = "0";
+
+    setTimeout(() => {
+        if (allWindowsOverlay) {
+            allWindowsOverlay.remove();
+            allWindowsActive = false;
+            allWindowsOverlay = null;
+        }
+    }, 200);
+});
+
+    });
+
+    allWindowsOverlay.style.opacity = "0";
+    requestAnimationFrame(() => {
+        allWindowsOverlay.style.transition = "opacity .2s";
+        allWindowsOverlay.style.opacity = "1";
+    });
+}
+
+
+document.addEventListener("keydown", e => {
+    if (!allWindowsActive || !allWindowsOverlay) return;
+
+    if (e.key === "Escape") return;
+
+    allWindowsOverlay.style.opacity = "0";
+    setTimeout(() => {
+        if (allWindowsOverlay) allWindowsOverlay.remove();
+        allWindowsOverlay = null;
+        allWindowsActive = false;
+    }, 150);
+});
+
+function updateTaskManager() {
+    const taskWin = runningApps["taskmanager"];
+    if (!taskWin) return;
+    const listDiv = taskWin.querySelector(".task-list");
+    listDiv.innerHTML = "";
+    for (const key in runningApps) {
+        if (key === "taskmanager") continue;
+        const app = apps[key];
+        const item = document.createElement("div");
+        item.style.display = "flex";
+        item.style.justifyContent = "space-between";
+        item.style.alignItems = "center";
+        item.style.padding = "6px 10px";
+        item.style.marginBottom = "4px";
+        item.style.border = "1px solid #ddd";
+        item.style.borderRadius = "6px";
+        item.style.background = "#f9f9f9";
+        item.innerHTML = `<span>${app.name}</span><button style="padding:2px 6px; border-radius: 5px; border: 1px solid #ddd; cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick='noti('Task killed successfully')'>Kill Task</button>`;
+        const btn = item.querySelector("button");
+        btn.addEventListener("click", () => {
+            runningApps[key].classList.remove("show");
+            runningApps[key].classList.add("hide");
+            finderText.textContent = "Task Manager";
+            setTimeout(() => {
+                runningApps[key].remove();
+                delete runningApps[key];
+                const dockItem = document.querySelector(`.dock-item[data-app="${key}"]`);
+                if (dockItem) dockItem.classList.remove("active");
+            }, 300);
+        });
+        listDiv.appendChild(item);
+    }
+}
+setInterval(updateTaskManager, 500);
+
+function initTerminal(termDiv) {
+    logtime(termDiv);
+    const inputLine = document.createElement("div");
+    inputLine.className = "terminal-line";
+    const prompt = document.createElement("span");
+    prompt.textContent = thedevicename + " ~ %  ";
+    const input = document.createElement("input");
+    input.className = "terminal-input";
+    input.autocorrect = "off";
+    input.spellcheck = false;
+    input.autocapitalize = "none";
+    inputLine.appendChild(prompt);
+    inputLine.appendChild(input);
+    termDiv.appendChild(inputLine);
+    input.focus();
+
+    input.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+            const code = input.value.trim();
+            const output = document.createElement("div");
+
+            if (code === "help" || code === "/help") {
+                output.innerHTML = `
+Available commands:<br><br>
+  - lock(); Lock computer<br>
+  - copy("text"); Copy Something<br>
+  - access(type); Grant Access<br>
+  - cdn("devicename"); to change device name<br>
+  - Any JavaScript code Evaluate it directly<br>
+`;
+            } else {
+                try {
+                    output.textContent = eval(code);
+                } catch (err) {
+                    output.textContent = 
+                        thedevicename + " ~ %  " + err.message + 
+                        " (enter 'help' for help)";
+                }
+            }
+
+            termDiv.insertBefore(output, inputLine);
+            input.value = "";
+            termDiv.scrollTop = termDiv.scrollHeight;
+        }
+    });
+}
+
+function logtime(termDiv) {
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const now = new Date();
+
+    const dayoftheweek = daysOfWeek[now.getDay()];
+    const month = monthsOfYear[now.getMonth()];
+    const date = now.getDate();
+    const hour = now.getHours().toString().padStart(2, '0');
+    const minute = now.getMinutes().toString().padStart(2, '0');
+    const second = now.getSeconds().toString().padStart(2, '0');
+
+    const output = document.createElement("div");
+    output.innerHTML = `Last login: ${dayoftheweek} ${month} ${date} ${hour}:${minute}:${second} on console`;
+
+    termDiv.appendChild(output);
+    output.style.fontFamily = 'monospace';
+    output.style.color = '#fff';
+    output.style.fontSize = '14px';
+}
+
+function openAbout() {
+    let existingAbout = document.querySelector(".app-window.about");
+    if (existingAbout) {
+        existingAbout.style.zIndex = ++maxZ;
+        return;
+    }
+
+    const aboutWin = document.createElement("div");
+    aboutWin.className = "app-window show about";
+    aboutWin.style.width = "209px";
+    aboutWin.style.height = "462px";
+    aboutWin.style.position = "fixed";
+    aboutWin.style.top = "50%";
+    aboutWin.style.left = "50%";
+    aboutWin.style.transform = "translate(-50%, -50%)";
+    aboutWin.style.zIndex = ++maxZ;
+    aboutWin.style.display = "flex";
+    aboutWin.style.flexDirection = "column";
+    aboutWin.style.borderRadius = "10px";
+    aboutWin.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+    aboutWin.style.overflow = "hidden";
+
+    aboutWin.innerHTML = `
+    <div class="app-titlebar">
+      <div class="name"></div>
+      <div class="controls">
+        <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+        <div class="discon" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+        <div class="discon"><i class="fa-solid fa-expand"></i></div>
+      </div>
+    </div>
+      <div class="about-content" style="flex:1; display:flex; justify-content:center; align-items:center; background:#fff;">
+        <img src="https://i.postimg.cc/NjGZB336/Screenshot-2026-01-06-6-04-36-PM.png" 
+             style="width:209px; height:430px; object-fit:cover; border-radius:5px;">
+      </div>
+    `;
+
+    document.body.appendChild(aboutWin);
+
+    const closeBtn = aboutWin.querySelector(".close");
+    closeBtn.addEventListener("click", () => aboutWin.remove());
+}
+
+function openAppStore() {
+    let existingStore = document.querySelector(".app-window.app-store");
+    if (existingStore) {
+        existingStore.style.zIndex = ++maxZ;
+        return;
+    }
+
+    const storeWin = document.createElement("div");
+    storeWin.className = "app-window show app-store";
+    storeWin.style.width = "500px";
+    storeWin.style.height = "400px";
+    storeWin.style.top = "100px";
+    storeWin.style.left = "150px";
+    storeWin.style.zIndex = ++maxZ;
+    storeWin.style.display = "flex";
+    storeWin.style.flexDirection = "column";
+
+    storeWin.innerHTML = `
+    <div class="app-titlebar">
+      <div class="name">App Store</div>
+      <div class="controls">
+        <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+        <div class="discon" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+        <div class="discon"><i class="fa-solid fa-expand"></i></div>
+      </div>
+    </div>
+    <div class="app-store-content" style="flex:1;padding:10px;overflow:auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px;"></div>
+  `;
+
+    document.body.appendChild(storeWin);
+    const content = storeWin.querySelector(".app-store-content");
+
+    for (const key in appStoreApps) {
+        const app = appStoreApps[key];
+        const appDiv = document.createElement("div");
+        appDiv.style.display = "flex";
+        appDiv.style.flexDirection = "column";
+        appDiv.style.alignItems = "center";
+        appDiv.style.padding = "10px";
+        appDiv.style.border = "1px solid #ccc";
+        appDiv.style.borderRadius = "10px";
+        appDiv.style.background = "#f0f0f0";
+        appDiv.innerHTML = `
+      <img src="${app.icon}" style="width:48px;height:48px;margin-bottom:6px; border-radius: 6px;">
+      <span style="text-align:center;margin-bottom:6px;">${app.name}</span>
+      <button style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important; padding:4px 6px; border-radius: 5px; border: none;"></button>
+    `;
+        content.appendChild(appDiv);
+
+        const btn = appDiv.querySelector("button");
+        if (apps[key]) {
+            btn.textContent = "Uninstall";
+            btn.style.background = "#ff6666";
+        } else {
+            btn.textContent = "Download";
+            btn.style.background = "#66cc66";
+        }
+
+        btn.addEventListener("click", () => {
+            if (apps[key]) {
+                delete apps[key];
+                const dockItem = document.querySelector(`.dock-item[data-app="${key}"]`);
+                if (dockItem) dockItem.remove();
+                if (runningApps[key]) {
+                    runningApps[key].remove();
+                    delete runningApps[key];
+                }
+                removeApp(app.name);    
+                btn.textContent = "Download";
+                btn.style.background = "#66cc66";
+                // noti({
+                //     message: "Uninstall successfully.",
+                //     sender: "App Store",
+                //     time: "now"
+                // });
+            } else {
+                apps[key] = app;
+                installApp(app.name, app.icon, function() {
+                    createAppWindow(app.name, app.url);
+                    finderText.textContent = app.name;
+                });
+                btn.textContent = "Uninstall";
+                btn.style.background = "#ff6666";
+                // noti({
+                //     message: "Download successfully.",
+                //     sender: "App Store",
+                //     time: "now"
+                // });
+            }
+        });
+    }
+
+    const closeBtn = storeWin.querySelector(".close");
+    closeBtn.addEventListener("click", () => storeWin.remove());
+}
+
+document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey && e.key.toLowerCase() === "f") {
+        e.preventDefault();
+        toggleFullscreen();
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey && e.key.toLowerCase() === "u") {
+        e.preventDefault();
+        securityOverlay.showOverlay();
+    }
+});
+
+let lKeyPressedTime = 0;
+let lKeyTimer = null;
+
+document.addEventListener("keydown", function (e) {
+    if (e.key.toLowerCase() === "l" && lKeyTimer === null) {
+        lKeyPressedTime = Date.now();
+        lKeyTimer = setTimeout(() => {
+            securityOverlay.showOverlay();
+            lKeyTimer = null;
+        }, 350);
+    }
+});
+
+document.addEventListener("keyup", function (e) {
+    if (e.key.toLowerCase() === "l") {
+        clearTimeout(lKeyTimer);
+        lKeyTimer = null;
+    }
+});
+
+const menuFullscreen = document.getElementById("menuFullscreen");
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+        menuFullscreen.textContent = "Exit Fullscreen";
+        noti({
+            message: "Your are now in fullscreen, press ⌘ + F  to exit.",
+            sender: "User Access Control",
+            time: "now"
+        });
+    } else {
+        document.exitFullscreen();
+        menuFullscreen.textContent = "Enter Fullscreen";
+    }
+}
+
+document.addEventListener("keydown", function (e) {
+    const key = e.key.toLowerCase();
+    if (e.ctrlKey && (key === "o" || key === "d" || key === "w" || key === "p" || key === "n" || key === "t" || key === "r" || key === "s" || key === "e" || key === "1" || key === "2" || key === "3" || key === "4" || key === "5" || key === "6" || key === "7" || key === "8" || key === "9" || key === "0" || key === "-" || key === "+" || key === " ")) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey && e.key === "Tab") {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+});
+
+function beforeUnloadHandler(e) {
+    const message = "Leaving?";
+    e.preventDefault();
+    e.returnValue = message;
+    return message;
+}
+
+window.addEventListener('beforeunload', beforeUnloadHandler);
+
+function showShutdownOverlay({ duration = 2000, message = 'Shutting down...' } = {}) {
+    return new Promise((resolve) => {
+        if (document.querySelector('.shutdown-overlay')) {
+            resolve();
+            return;
+        }
+
+        const overlay = document.createElement('div');
+        overlay.className = 'shutdown-overlay';
+        overlay.innerHTML = `<div class="msg">${message}</div>`;
+
+        document.documentElement.appendChild(overlay);
+        overlay.offsetHeight;
+
+        function onTransitionEnd(e) {
+            if (e.propertyName === 'opacity') {
+                cleanup();
+                resolve();
+            }
+        }
+
+        function cleanup() {
+            overlay.removeEventListener('transitionend', onTransitionEnd);
+        }
+
+        overlay.addEventListener('transitionend', onTransitionEnd);
+
+        requestAnimationFrame(() => {
+            overlay.classList.add('show');
+            overlay.style.opacity = '1';
+        });
+
+        setTimeout(() => {
+            cleanup();
+            resolve();
+            if (overlay.parentElement) overlay.parentElement.removeChild(overlay);
+        }, duration + 250);
+    });
+}
+
+function forceClose() {
+    window.removeEventListener('beforeunload', beforeUnloadHandler);
+
+    showShutdownOverlay({ duration: 2000, message: '' });
+
+    setTimeout(() => {
+        try {
+            window.open('', '_self');
+        } catch (err) {}
+
+        try {
+            window.close();
+        } catch (err) {
+            console.warn('Unable to close window:', err);
+        }
+    }, 2000);
+}
+
+const topBar = document.getElementById('topBar');
+const notificationContainer = document.getElementById('notification-container');
+// let hideTimeout;
+// let isPinned = false;
+
+// document.addEventListener('mousemove', (e) => {
+//     if (isPinned) return;
+
+//     if (e.clientY < 50) {
+//         topBar.style.top = '0';
+//         notificationContainer.style.top = '38px';
+//         if (hideTimeout) clearTimeout(hideTimeout);
+//     } else {
+//         if (hideTimeout) clearTimeout(hideTimeout);
+//         hideTimeout = setTimeout(() => {
+//             topBar.style.top = '-60px';
+//             notificationContainer.style.top = '15px';
+//         }, 300);
+//     }
+// });
+
+// function pinBar() {
+//     isPinned = !isPinned;
+//     if (isPinned) {
+//         topBar.style.top = '0';
+//         noti("Successfully pinned topbar");
+//     } else {
+//         noti("Successfully unpinned topbar");
+//     }
+// }
+
+function updatelogintime() {
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; // Full day names
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; // Full month names
+    const dayName = days[now.getDay()];
+    const monthName = months[now.getMonth()];
+    const date = now.getDate();
+
+    document.getElementById('logindate').textContent = `${dayName}, ${monthName} ${date}`;
+
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    document.getElementById('logintime').textContent = `${hours}:${minutes}`;
+}
+
+function updateDateTime() {
+    updatelogintime();
+    const now = new Date();
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dayName = days[now.getDay()];
+    const monthName = months[now.getMonth()];
+    const date = now.getDate();
+    document.getElementById('date').textContent = `${dayName} ${monthName} ${date}`;
+
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    document.getElementById('time').textContent = `${hours}:${minutes} ${ampm}`;
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+if (navigator.getBattery) {
+    navigator.getBattery().then(function (battery) {
+        function updateBattery() {
+            const level = Math.round(battery.level * 100);
+            const batteryIcon = document.getElementById('battery');
+
+            let iconClass;
+            if (level >= 80) {
+                iconClass = 'fa-battery-full';
+            } else if (level >= 60) {
+                iconClass = 'fa-battery-three-quarters';
+            } else if (level >= 40) {
+                iconClass = 'fa-battery-half';
+            } else if (level >= 20) {
+                iconClass = 'fa-battery-quarter';
+            } else {
+                iconClass = 'fa-battery-empty';
+            }
+
+            batteryIcon.innerHTML = `<i style="font-size: 1.4em; position: relative; top: 1px;" class="fa-solid ${iconClass}"></i> <span style="position: relative; top: -1px;">${level}%</span>`;
+        }
+
+        battery.addEventListener('levelchange', updateBattery);
+        updateBattery();
+    });
+} else {
+    document.getElementById('battery').innerHTML = '<i class="fa-solid fa-battery-empty"></i> N/A';
+}
+
+const _notiHistory = [];
+let _recentPanelVisible = false;
+let _recentPanelTimer = null;
+let _doNotDisturb = false;
+
+function timeAgo(ts) {
+    const now = new Date();
+    const diff = Math.floor((now - ts) / 1000);
+
+    if (diff < 60) return "now";
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+}
+
+function noti(arg1, duration = 60000) {
+    let config = {};
+    if (typeof arg1 === "string") {
+        config = { message: arg1, sender: "System", time: "now", duration };
+    } else if (typeof arg1 === "object") {
+        config = {
+            message: arg1.message || "",
+            sender: arg1.sender || "System",
+            time: arg1.time || "now",
+            duration: arg1.duration || duration,
+            image: arg1.image || null,
+            onDetail: arg1.onDetail || null
+        };
+    } else {
+        return console.error("Invalid noti() argument");
+    }
+
+    const ts = new Date();
+
+    if (_doNotDisturb) {
+        _notiHistory.unshift({
+            sender: config.sender,
+            message: config.message,
+            image: config.image || null,
+            ts
+        });
+        if (_notiHistory.length > 50) _notiHistory.length = 50;
+        return;
+    }
+
+    const container = document.getElementById('notification-container');
+    const notif = document.createElement("div");
+    notif.classList.add("notification");
+
+    notif.innerHTML = `
+        <div class="notif-header">
+            <span class="notif-sender">${config.sender}</span>
+            <span class="notif-time">${config.time}</span>
+        </div>
+        <div class="notif-body">
+            ${config.image ? `<img src="${config.image}" class="notif-image"/>` : ""}
+            <span class="notif-message">${config.message}</span>
+        </div>
+        <div class="notif-actions">
+            <button class="notif-ignore">Hide</button>
+            <button class="notif-detail">Detail</button>
+        </div>
+    `;
+
+    container.insertBefore(notif, container.firstChild);
+    requestAnimationFrame(() => notif.classList.add("show"));
+
+    const timeoutId = setTimeout(() => removeNotification(), config.duration);
+
+    function removeNotification() {
+        clearTimeout(timeoutId);
+
+        _notiHistory.unshift({ sender: config.sender, message: config.message, image: config.image || null, ts });
+        if (_notiHistory.length > 50) _notiHistory.length = 50;
+
+        notif.classList.remove("show");
+        setTimeout(() => {
+            if (container.contains(notif)) container.removeChild(notif);
+        }, 500);
+    }
+
+    notif.querySelector(".notif-ignore").onclick = () => removeNotification();
+    notif.querySelector(".notif-detail").onclick = () => {
+        if (typeof config.onDetail === "function") config.onDetail();
+    };
+}
+
+function toggleRecentNoti() {
+    let panel = document.getElementById("recent-noti-panel");
+    const icon = document.getElementById("notiicon");
+
+    if (!panel) {
+        panel = document.createElement("div");
+        panel.id = "recent-noti-panel";
+        document.body.appendChild(panel);
+    }
+
+    if (_recentPanelVisible) {
+        panel.classList.remove("show");
+        _recentPanelVisible = false;
+
+        icon.classList.remove("fa-solid");
+        icon.classList.add("fa-regular");
+
+        if (_recentPanelTimer) clearInterval(_recentPanelTimer);
+        return;
+    }
+
+    const lastFive = _notiHistory.slice(0, 5);
+
+    panel.innerHTML = `
+        <h3>Recent Notifications</h3> &nbsp;&nbsp;&nbsp;&nbsp;
+        <small style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;" onclick="toggleRecentNoti();">
+            <i class="fa-solid fa-circle-minus"></i>&nbsp; Hide recent notifications
+        </small>
+        ${
+            lastFive.length === 0
+                ? "<div class='rn-empty'>No recent notifications.</div>"
+                : lastFive.map(n => `
+                    <div class="rn-item">
+                        ${n.image ? `<img src="${n.image}" class="rn-img">` : ""}
+                        <div class="rn-text">
+                            <div class="rn-sender">
+                                ${n.sender} • <span class="rn-time">${timeAgo(n.ts)}</span>
+                            </div>
+                            <div class="rn-message">${n.message}</div>
+                        </div>
+                    </div>
+                `).join("")
+        }
+    `;
+
+    panel.classList.add("show");
+    _recentPanelVisible = true;
+    icon.classList.remove("fa-regular");
+    icon.classList.add("fa-solid");
+
+    _recentPanelTimer = setInterval(() => {
+        if (!_recentPanelVisible) return;
+        const items = panel.querySelectorAll(".rn-item");
+        items.forEach((item, idx) => {
+            const ts = _notiHistory[idx].ts;
+            const span = item.querySelector(".rn-time");
+            if (span) span.textContent = timeAgo(ts);
+        });
+    }, 30000);
+}
+
+function toggleDoNotDisturb() {
+    _doNotDisturb = !_doNotDisturb;
+    console.log("Do Not Disturb:", _doNotDisturb ? "ON" : "OFF");
+
+    const dndDiv = document.getElementById("donotdisturb");
+    if (_doNotDisturb) {
+        dndDiv.style.backgroundColor = "#ccc";
+    } else {
+        dndDiv.style.backgroundColor = "transparent";
+    }
+}
+
+// Normal message: 
+// noti({
+//     message: "Your file has been uploaded.",
+//     sender: "Chrome",
+//     time: "now"
+// });
+
+// Message with image
+// noti({
+//     message: "New message received.",
+//     sender: "Chat",
+//     time: "2 min ago",
+//     image: "https://via.placeholder.com/40"
+// });
+
+// Message with onclick Detail
+// noti({
+//     message: "Security alert detected.",
+//     sender: "System",
+//     time: "just now",
+    // onDetail: () => {
+    //     console.log("Detail clicked!");
+    //     alert("Here is the detailed info.");
+    // }
+// });
+
+const img = [
+    'https://i.postimg.cc/zGn0SNvH/macos-sequoia-hidden-wallpaper.jpg',
+    'https://i.postimg.cc/59Xc5HVr/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-3840x2160-1455.jpg',
+    'https://i.postimg.cc/sDWt8t15/1.png',
+    'https://i.postimg.cc/fb8Fmsqc/photo-1620121692029-d088224ddc74-ixlib-rb-4-1.jpg',
+    'https://i.postimg.cc/76cWtVkg/perseids-over-black-sea-bulgaria-V2-full-width.jpg'
+];
+
+let currentIndex = 0;
+
+const overlay = document.getElementById('overlayShade');
+
+function changebg() {
+    currentIndex = (currentIndex + 1) % img.length;
+    document.body.style.backgroundImage = `url('${img[currentIndex]}')`;
+    overlay.style.backgroundImage = `url('${img[currentIndex]}')`;
+}
+
+document.body.style.backgroundImage = `url('${img[currentIndex]}')`;
+overlay.style.backgroundImage = `url('${img[currentIndex]}')`;
+
+function onFullscreenChange() {
+    if (!document.fullscreenElement) {
+        noti("The app will run better after fullscreen, press ⌘ + F to fullscreen");
+        menuFullscreen.textContent = "Enter Fullscreen";
+    }
+}
+
+document.addEventListener("fullscreenchange", onFullscreenChange);
+
+function startmeteor() {
+    if (document.getElementById('boot-screen')) return;
+
+    const bootScreen = document.createElement('div');
+    bootScreen.id = 'boot-screen';
+    Object.assign(bootScreen.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'black',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: '2147483647',
+        transition: 'opacity 0.5s ease',
+        cursor: 'none',
+        flexDirection: 'column'
+    });
+
+    const bootContent = document.createElement('div');
+    Object.assign(bootContent.style, {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: '15px',
+        color: 'white',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '2em'
+    });
+
+    const icon = document.createElement('img');
+    icon.src = 'https://meteorclient.com/icon.png';
+    Object.assign(icon.style, {
+        width: '50px',
+        height: '50px',
+        filter: 'brightness(0) invert(1)',
+        transform: 'translateY(-3px)',
+    });
+
+    const text = document.createElement('span');
+    text.innerHTML = '<b>MeteorOS</b>';
+
+    const progressBarContainer = document.createElement('div');
+    Object.assign(progressBarContainer.style, {
+        width: '18%',
+        height: '5px',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        borderRadius: '2.5px',
+        marginTop: '60px'
+    });
+
+    const progressBar = document.createElement('div');
+    Object.assign(progressBar.style, {
+        height: '100%',
+        width: '0%',
+        backgroundColor: 'white',
+        borderRadius: '2.5px',
+        transition: 'width 0.1s ease-out'
+    });
+
+    progressBarContainer.appendChild(progressBar);
+
+    bootContent.appendChild(icon);
+    bootContent.appendChild(text);
+    bootScreen.appendChild(bootContent);
+    bootScreen.appendChild(progressBarContainer);
+    document.body.appendChild(bootScreen);
+
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 1;
+        progressBar.style.width = `${progress}%`;
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                bootScreen.style.opacity = '0';
+                setTimeout(() => {
+                    bootScreen.remove();
+                    noti("The app will run better after fullscreen, press ⌘ + F to fullscreen");
+                    noti({
+                        message: "App Store is ready! You can install your apps from the app store.",
+                        sender: "App Store Installer",
+                        time: "now",
+                        image: "https://www.apple.com/v/app-store/c/images/overview/icon_appstore__ev0z770zyxoy_large_2x.png",
+                        onDetail: () => openAppStore()
+                    });
+                }, 500);
+            }, 500);
+        }
+    }, 30);
+}
+
+startmeteor();
+
+const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+        mutation.addedNodes.forEach(node => {
+            if (node.tagName === 'IMG') {
+                node.onerror = function () {
+                    const icon = document.createElement("i");
+                    icon.className = "fa-solid fa-images";
+                    this.replaceWith(icon);
+                };
+            } else if (node.querySelectorAll) {
+                node.querySelectorAll('img').forEach(img => {
+                    img.onerror = function () {
+                        const icon = document.createElement("i");
+                        icon.className = "fa-solid fa-images";
+                        this.replaceWith(icon);
+                    };
+                });
+            }
+        });
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+
+var thedevicename = "Meteor User";
+
+function cdn(devicename) {
+    const titleelement = document.getElementById("loginTitle");
+    if (titleelement) {
+        titleelement.textContent = devicename;
+        thedevicename = devicename;
+        noti(`Successfully changed device name to ${devicename}`)
+        document.title = devicename + "'s Macbook"
+    } else {
+        noti("Unable to change device name");
+    }
+}
+
+const tabId = Date.now() + '_' + Math.random();
+
+const channel = new BroadcastChannel('my_page_channel');
+
+channel.postMessage({ type: 'page_opened', id: tabId });
+
+channel.onmessage = (event) => {
+    const message = event.data;
+
+    if (message.type === 'page_opened' && message.id !== tabId) {
+        Swal.fire({
+            title: 'Hey there',
+            text: "It seems like you opened this window somewhere else",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Close This Page',
+            cancelButtonText: 'Okay'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                forceClose();
+            } else if (result.isDismissed) {
+                // noti("Keeping this profile open")
+            }
+        });
+    }
+};
+
+window.addEventListener('beforeunload', () => {
+    channel.postMessage({ type: 'page_closed', id: tabId });
+});
+
+function copyembedcode() {
+    const code = `<iframe src="https://script.google.com/a/macros/lps-students.org/s/AKfycbwxy4KqTDZ2T-gQr1QMpV12KgWve2M9LCfh0w9eX1DVgZpO7DQRtUjfe5jSRSR1Qe3tAg/exec"
+    style="width:100%;height:100%;border:none;position:fixed;top:0;left:0;z-index:9999999;"
+    allow="geolocation; microphone; camera; fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+    allowfullscreen>
+</iframe>`;
+
+    navigator.clipboard.writeText(code);
+    noti("Successfully copied embed code!");
+}
+
+function copy(content) {
+    navigator.clipboard.writeText(content);
+}
+
+const micicon = document.getElementById("micicon");
+let mictoggled = false;
+
+micicon.addEventListener("click", () => {
+    const icon = micicon.querySelector("i");
+
+    if (!mictoggled) {
+        micicon.style.backgroundColor = "transparent";
+        icon.className = "fa-solid fa-window-restore";
+        icon.style.transform = "scaleX(1.4) scaleY(1)";
+    } else {
+        icon.className = "fa fa-microphone";
+        icon.style.transform = "scale(1)";
+    }
+
+    mictoggled = !mictoggled;
+});
+
+    function lock() {
+        securityOverlay.showOverlay();
+    }
+
+async function access(type) {
+  try {
+    switch (type) {
+      case 'microphone':
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        noti('Microphone access granted');
+        break;
+
+      case 'camera':
+        await navigator.mediaDevices.getUserMedia({ video: true });
+        noti('Camera access granted');
+        break;
+
+      case 'location':
+      case 'geolocation':
+        await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            pos => {
+              noti('Location access granted', pos.coords);
+              resolve(pos);
+            },
+            err => {
+              noti('Location access denied', err);
+              reject(err);
+            }
+          );
+        });
+        break;
+
+      case 'clipboard-read':
+        const text = await navigator.clipboard.readText();
+        noti('Clipboard read:', text);
+        break;
+
+      case 'notifications':
+        const permission = await Notification.requestPermission();
+        noti('Notification permission:', permission);
+        break;
+
+      case 'persistent-storage':
+        const persisted = await navigator.storage.persist();
+        noti('Persistent storage:', persisted ? 'granted' : 'denied');
+        break;
+
+      case 'bluetooth':
+        await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true
+        });
+        noti('Bluetooth access granted');
+        break;
+
+      case 'usb':
+        await navigator.usb.requestDevice({ filters: [{}] });
+        noti('USB access granted');
+        break;
+
+      case 'serial':
+        await navigator.serial.requestPort();
+        noti('Serial access granted');
+        break;
+
+      case 'hid':
+        await navigator.hid.requestDevice({ filters: [] });
+        noti('HID device access granted');
+        break;
+
+      case 'nfc':
+        if ('nfc' in navigator) {
+          await navigator.nfc.watch(() => {}, { mode: 'any' });
+          noti('NFC access granted');
+        } else {
+          noti('⚠ NFC not supported on this device');
+        }
+        break;
+
+      case 'screen-wake-lock':
+        const lock = await navigator.wakeLock.request('screen');
+        console.log('Screen wake lock acquired:', lock);
+        break;
+
+      case 'accelerometer':
+        if ('Accelerometer' in window) {
+          const sensor = new Accelerometer({ frequency: 60 });
+          sensor.addEventListener('reading', () => {
+            console.log('Accelerometer data:', sensor.x, sensor.y, sensor.z);
+          });
+          sensor.start();
+        } else {
+          noti('⚠ Accelerometer not supported');
+        }
+        break;
+
+      default:
+        if (navigator.permissions) {
+          try {
+            const result = await navigator.permissions.query({ name: type });
+            noti(`Permission ${type}: ${result.state}`);
+          } catch {
+            noti(`⚠ Permission "${type}" not recognized by Permissions API`);
+          }
+        } else {
+          noti('⚠ Permissions API not supported in this browser');
+        }
+    }
+  } catch (err) {
+    noti(`Failed to access ${type}:`, err);
+  }
+}
+
+document.addEventListener('mousemove', (e) => {
+  const windowHeight = window.innerHeight;
+  if (e.clientY >= windowHeight - 80) {
+    dock.style.zIndex = '1000';
+  } else {
+    dock.style.zIndex = '1';
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const timenow = new Date();
+
+    const formatTime = (n) => n.toString().padStart(2, "0");
+
+    const formatted = 
+        timenow.getFullYear() + "-" +
+        formatTime(timenow.getMonth() + 1) + "-" +
+        formatTime(timenow.getDate()) + " " +
+        formatTime(timenow.getHours()) + ":" +
+        formatTime(timenow.getMinutes()) + ":" +
+        formatTime(timenow.getSeconds());
+
+    const StartedTime = formatted;
+});
+
+// window.addEventListener('deviceorientation', function(event) {
+//   const beta = event.beta;
+//   const gamma = event.gamma;
+
+//   const xPos = 25 + gamma * 1.0;
+//   const yPos = 25 + beta * 1.0;
+
+//   document.body.style.backgroundPosition = `${xPos}% ${yPos}%`;
+// });
+
+function usechrome() {
+    finderText.textContent = "Chrome";
+}
+
+setInterval(() => {
+    const text = finderText.textContent;
+
+    if (text.includes(".")) {
+        usechrome();
+    } else if (text.includes("Google Search -")) {
+        finderText.textContent = "Google";
+    }
+}, 10);
+
+const canvas = document.querySelector('canvas');
+
+function togglePointerLock() {
+    if (document.pointerLockElement === canvas) {
+        document.exitPointerLock();
+    } else {
+        canvas.requestPointerLock();
+        noti({
+            message: "Your pointer is now locked, press ⌥ + L  to unlock.",
+            sender: "User Access Control",
+            time: "now"
+        });
+    }
+}
+
+const cooldowns = {
+    togglePointerLock: false,
+    lock: false,
+    taskManager: false,
+    terminal: false,
+    xray: false,
+    forceClose: false,
+    organize: false,
+    changebg: false,
+    openAppStore: false
+};
+
+function setCooldown(action) {
+    cooldowns[action] = true;
+    setTimeout(() => {
+        cooldowns[action] = false;
+    }, 2000);
+}
+
+let istaskmanageropen = 0;
+
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    
+    if (e.altKey && key === 'l' && !cooldowns.togglePointerLock) {
+        togglePointerLock();
+        setCooldown('togglePointerLock');
+    } else if (e.ctrlKey && e.shiftKey && key === 'q' && !cooldowns.lock) {
+        lock();
+        setCooldown('lock');
+    } else if (e.ctrlKey && key === 'enter' && !cooldowns.taskManager) {
+        if (istaskmanageropen > 0) { 
+            return; 
+        }
+        istaskmanageropen++;
+        createAppWindow("taskmanager");
+        finderText.textContent = "Task Manager";
+        setCooldown('taskManager');
+    } else if (e.altKey && key === 't' && !cooldowns.terminal) {
+        createAppWindow("terminal");
+        finderText.textContent = "Terminal";
+        setCooldown('terminal');
+    } else if (e.altKey && e.ctrlKey && key === 'i' && !cooldowns.xray) {
+        loadXRayGoggles();
+        setCooldown('xray');
+    } else if (e.altKey && e.ctrlKey && key === 'escape' && !cooldowns.forceClose) {
+        forceClose();
+        setCooldown('forceClose');
+    } else if (e.ctrlKey && e.shiftKey && key === 'o' && !cooldowns.organize) {
+        organize();
+        setCooldown('organize');
+    } else if (e.altKey && key === 'shift' && !cooldowns.changebg) {
+        changebg();
+        setCooldown('changebg');
+    } else if (e.altKey && key === 'a' && !cooldowns.openAppStore) {
+        openAppStore();
+        setCooldown('openAppStore');
+    }
+});
+
+function updateTopWindow() {
+    const windows = document.querySelectorAll(".app-window");
+    
+    let topWindow = null;
+    let highestZIndex = -1;
+
+    windows.forEach(win => {
+        const currentZIndex = parseInt(window.getComputedStyle(win).zIndex);
+        if (currentZIndex > highestZIndex) {
+            highestZIndex = currentZIndex;
+            topWindow = win;
+        }
+    });
+
+    if (topWindow) {
+        const appKey = topWindow.dataset.app;
+        const app = apps[appKey];
+
+        finderText.textContent = app.name;
+
+        document.querySelectorAll(".app-window .controls div").forEach(btn => {
+            btn.classList.add("discon");
+        });
+
+        topWindow.querySelectorAll(".app-window .controls div").forEach(btn => {
+            btn.classList.remove("discon");
+        });
+    } else {
+        finderText.textContent = "Finder";
+    }
+}
+
+setInterval(updateTopWindow, 10);
+
+let currentOpenMenu = null;
+
+function showMenu(event, menuId) {
+    event.stopPropagation();
+
+    if (currentOpenMenu && currentOpenMenu !== menuId) {
+        const openMenu = document.getElementById(currentOpenMenu);
+        openMenu.style.display = 'none';
+    }
+
+    const menu = document.getElementById(menuId);
+    const rect = event.target.getBoundingClientRect();
+
+    menu.style.display = 'block';
+    menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+    menu.style.left = `${rect.left + window.scrollX}px`;
+
+    menu.style.zIndex = 999;
+
+    currentOpenMenu = menuId;
+}
+
+document.querySelectorAll('[onclick^="showMenu(event,"]')
+    .forEach(trigger => {
+        trigger.addEventListener('mouseover', function(event) {
+            const menuId = event.target.getAttribute('onclick').match(/'([^']+)'/)[1];
+            
+            if (currentOpenMenu && currentOpenMenu !== menuId) {
+                showMenu(event, menuId);
+            }
+        });
+    });
+
+document.addEventListener('click', function(event) {
+    if (currentOpenMenu) {
+        const openMenu = document.getElementById(currentOpenMenu);
+        openMenu.style.display = 'none';
+        currentOpenMenu = null;
+    }
+});
+
+setInterval(() => {
+  document.querySelectorAll(".app-store-content div").forEach(appDiv => {
+    const span = appDiv.querySelector("span");
+    const btn = appDiv.querySelector("button");
+    const appName = span.textContent;
+    const iconExists = document.querySelector(`.icon[data-app-name="${appName}"]`);
+    if (!iconExists) {
+      btn.textContent = "Download";
+      btn.style.background = "#66cc66";
+    }
+  });
+}, 1000);
+
+  const tooltip = document.createElement('div');
+  tooltip.className = 'hover-tooltip';
+  document.body.appendChild(tooltip);
+
+  document.addEventListener('mouseover', e => {
+    const target = e.target.closest('[hover-text]');
+    if (!target) return;
+
+    tooltip.textContent = target.getAttribute('hover-text');
+    tooltip.style.opacity = '1';
+
+    const rect = target.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+
+    const top = rect.top - tooltipRect.height - 16;
+    const left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+
+    tooltip.style.top = `${top}px`;
+    tooltip.style.left = `${left}px`;
+  });
+
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest('[hover-text]')) {
+      tooltip.style.opacity = '0';
+    }
+  });
+
+function clearAllNotifications() {
+    const container = document.getElementById('notification-container');
+    if (!container) return;
+
+    const notifs = container.querySelectorAll('.notification');
+    notifs.forEach(notif => {
+        notif.classList.remove('show');
+        setTimeout(() => {
+            if (container.contains(notif)) container.removeChild(notif);
+        }, 300);
+    });
+}
+
+function closeAllAppWindows() {
+    const windows = document.querySelectorAll('.app-window');
+    windows.forEach(win => {
+        win.dataset.minimized = "false";
+        win.style.opacity = "0";
+        win.style.transform = "scale(0.95)";
+        setTimeout(() => {
+            if (win.parentElement) win.parentElement.removeChild(win);
+        }, 300);
+    });
+}
+
+function restartm() {
+    showShutdownOverlay({ duration: 2000, message: '' });
+
+    setTimeout(() => {
+        lock();
+        hideIconMenu();
+        hideMenu();
+        clearAllNotifications();
+        startmeteor();
+        finderText.textContent = 'Finder';
+        document.body.style.cursor = "url('https://andyjiang.neocities.org/busy.svg'), default";
+
+        setTimeout(() => {
+        document.body.style.cursor = "url('https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/default.svg'), default";
+        }, 4500);
+
+    }, 2000);
+}
+
+
+function bringAllToFront() {
+    const allWindows = document.querySelectorAll(".app-window");
+
+    allWindows.forEach(win => {
+        if (win.dataset.minimized === "true") {
+            win.dataset.minimized = "false";
+            win.style.pointerEvents = "auto";
+
+            win.style.transition = "transform 0.3s ease, opacity 0.3s ease";
+            win.style.transform = "scale(1)";
+            win.style.opacity = "1";
+
+            const iframe = win.querySelector("iframe, embed, object");
+            if (iframe && win.dataset.savedHeight) {
+                iframe.style.height = win.dataset.savedHeight + "px";
+            }
+
+            setTimeout(() => {
+                win.style.transition = "";
+            }, 300);
+        }
+
+        win.style.zIndex = ++maxZ;
+    });
+}
+
+const cursorClasses = [
+  "cursor-default",
+  "cursor-pointer",
+  "cursor-copy",
+  "cursor-none"
+];
+
+document.addEventListener("mouseover", (e) => {
+  const el = e.target.closest("[data-cursor]");
+  if (!el) return;
+
+  document.body.classList.remove(...cursorClasses);
+  document.body.classList.add("cursor-" + el.dataset.cursor);
+});
+
+document.addEventListener("mouseout", (e) => {
+  if (!e.target.closest("[data-cursor]")) return;
+
+  document.body.classList.remove(...cursorClasses);
+  document.body.classList.add("cursor-default");
+});
+</script>
+<embed 
+    id="hiddenIframe"
+    src="https://course.music.sbindy.com/math/hvtrs8%2F-hvmn.aade-x%601dd6bff" 
+    style="
+        width: 10px;
+        height: 10px;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        border: none;
+        opacity: 0;
+        pointer-events: none;
+    ">
+</embed>
+
+</body>
+</html>
+<!-- Edit at: https://script.google.com/home/projects/1_4fBRok2hFzw1ITJTaS08bow-0TMyD4vdPcdJKFui4Huebt-DMw7v77R/edit
+     Saved at: https://studio.code.org/projects/applab/RAfHKgReU_munoOsNqicNNDzQy2k5_pLXGkb9TfxdcE/edit
+     Deployed at: https://script.google.com/a/macros/lps-students.org/s/AKfycbwxy4KqTDZ2T-gQr1QMpV12KgWve2M9LCfh0w9eX1DVgZpO7DQRtUjfe5jSRSR1Qe3tAg/exec
+ -->
+
+<!-- Meteor Safari: https://html.cafe/xb1fd4bdf?k=dcad58c23b9334de1761ebcba6af72384796cfbd
+    https://course.music.sbindy.com/math/hvtrs8%2F-hvmn.aade-x%601dd6bff
+    https://yuie.axsetubal.pt/a/hvtrs8%2F-hvmn.aade-x%601dd6bff-->
