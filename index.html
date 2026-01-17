@@ -4,9 +4,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<!-- <title>MeteorOS V1.7.0</title> -->
 	<title>&#8203;</title>
-	<!-- <link rel="icon" href="https://gointospace.app/assets/favicon.ico" type="image/x-icon"> -->
 	<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c9/Finder_Icon_macOS_Big_Sur.png" type="image/x-icon">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 	<link rel="manifest" href="https://googlechromelabs.github.io/pwa-examples/a2hs/manifest.json">
@@ -731,9 +729,15 @@
 			box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25),
 			inset 0 0 0 0.5px rgba(255, 255, 255, 0.3);
 			opacity: 0;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
 			transform: translateY(-10px);
 			transition: opacity .35s ease, transform .35s ease;
+			transition: background 0.2s ease, transform 0.15s ease;
 		}
+
+        .notification:hover {
+			background: rgba(225, 225, 225, 0.65);
+        }
 
 		.notification.show {
 			opacity: 1;
@@ -783,9 +787,37 @@
 			transition: background 0.2s ease, transform 0.15s ease;
 		}
 
+        .notification .notif-ignore {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+			background: rgba(255, 255, 255, 0.45);
+            color: black;
+            font-size: 14px;
+            line-height: 20px;
+            text-align: center;
+            cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important;
+            opacity: 0;
+            pointer-events: none;
+			transition: background 0.2s ease, transform 0.15s ease;
+        }
+
+        .notification:hover .notif-ignore {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .notification .notif-ignore::before {
+            content: "×";
+        }
+
 		.notif-actions button:hover {
 			background: rgba(255, 255, 255, 0.25);
-			transform: translateY(-1px);
 		}
 
 		.dock-item.dragging {
@@ -1071,7 +1103,7 @@
         <div class="avatar" aria-hidden="true">
           <i class="fas fa-user" id="useravatar"></i>
         </div>
-        <div class="username" id="loginTitle">Meteor User</div>
+        <div class="username" id="loginTitle">User</div>
           <input id="pwd" class="textInput" type="password" inputmode="numeric" aria-label="Enter Password" placeholder="Enter Password" autocomplete="current-password" />
         <div class="status" id="statusMsg" aria-live="polite"></div>
         </div>
@@ -1083,7 +1115,7 @@
             <li onclick="openAbout();">About This Mac</li>
             <hr>
             <li onclick="createAppWindow('settings');">System Preferences...</li>
-            <li onclick="openAppStore();">App Store...</li>
+            <li onclick="createAppWindow('appstore');">App Store...</li>
             <hr>
             <li>Recent Items</li>
             <hr>
@@ -1275,7 +1307,7 @@
 <li style="display:flex;align-items:center;" onclick="">Compress to... <small style="margin-left:auto;"><b>⌘</b> + <b>⌥</b> + Z</small></li>
 <li style="display:flex;align-items:center;" onclick="">Share to iPad or iPhone... <small style="margin-left:auto;"><b>⌥</b> + S</small></li>
 <hr>
-<li style="display:flex;align-items:center;" onclick="openAppStore();">Open Appstore</li>
+<li style="display:flex;align-items:center;" onclick="createAppWindow('appstore');">Open Appstore</li>
   </ul>
 </div>
 	<div class="top-bar" id="topBar">
@@ -1619,7 +1651,7 @@ function organize() {
 
 installApp("Background Images", "https://i.postimg.cc/pdj50tFf/folder-icon-macos.png", () => {}, 50, 50);
 installApp("Applications", "https://i.postimg.cc/pdj50tFf/folder-icon-macos.png", () => {}, 50, 150);
-installApp("About MeteorOS.pdf", "https://i.postimg.cc/bN3yV1wn/1667px-PDF-file-icon-svg.png", () => {}, 150, 50);
+installApp("About.pdf", "https://i.postimg.cc/bN3yV1wn/1667px-PDF-file-icon-svg.png", () => {}, 150, 50);
 
 function createNewFolder() {
     installApp("New Folder", "https://i.postimg.cc/pdj50tFf/folder-icon-macos.png", () => {});
@@ -1700,7 +1732,7 @@ function loadXRayGoggles() {
     script.setAttribute('data-lang', 'en-US');
     script.setAttribute('data-baseuri', 'https://x-ray-goggles.mouse.org');
     document.body.appendChild(script);
-    noti("You are now inspecting MeteorOS, this could damage the system");
+    noti("You are now inspecting, this could damage the system");
 }
 
 function changeAvatar(newIconClass, style = 'fas') {
@@ -1754,7 +1786,7 @@ function showOverlay() {
         } catch (e) { }
 
     if (isFirstTime()) {
-        loginTitle.textContent = "Meteor User";
+        loginTitle.textContent = "User";
         status.textContent = "Set your password";
     } else {
         loginTitle.textContent = thedevicename;
@@ -1786,7 +1818,7 @@ function hideOverlay() {
         if (isFirstTime()) {
             CORRECT = v;
 
-            loginTitle.textContent = "Meteor User";
+            loginTitle.textContent = "User";
             status.textContent = "Password registered, please login now.";
             pwdInput.value = '';
 
@@ -1955,7 +1987,7 @@ const apps = {
     calculator: { name: "Calculator", url: "", icon: "https://i.postimg.cc/cL76sMWV/d7683090881be82d88efa4ac1d3aec74.png" },
     settings: { name: "System Settings", url: "", icon: "https://i.postimg.cc/9FNTsjVt/Settings.webp" },
     safari: { name: "Safari", url: "https://course.music.sbindy.com/math/hvtrs8%2F-hvmn.aade-x%601dd6bff", icon: "https://i.postimg.cc/SRryH9P3/2048px-Safari-2020-logo-svg.png" },
-    meteor: { name: "About MeteorOS", url: "", icon: "https://i.postimg.cc/1ts22d1L/meteor-client.png" },
+    about: { name: "About", url: "", icon: "" },
     appstore: { name: "App Store", url: "", icon: "https://i.postimg.cc/QMgx9N5t/1024px-App-Store-(i-OS)-svg.png" },
     finderd: { name: "Downloads", url: "", icon: "" }
 };
@@ -2007,7 +2039,7 @@ for (const key in apps) addDockItem(key);
 // }
 
 function addDockItem(key) {
-    if (key === "terminal" || key === "taskmanager" || key === "finderd") return;
+    if (key === "terminal" || key === "taskmanager" || key === "finderd" || key === "about") return;
     if (document.querySelector(`.dock-item[data-app="${key}"]`)) return;
     const item = document.createElement("div");
     item.className = "dock-item";
@@ -2157,22 +2189,117 @@ win.innerHTML = `
   </iframe>
 `;
 
-// const iframe = document.getElementById('hiddenIframe');
+const iframe = document.getElementById('preloader');
 
-// if (iframe) {
-//     iframe.remove();
-// }
+if (iframe) {
+    iframe.remove();
+}
 
-    } else if (key === "calculator") {
+    } else if (key === "appstore") {
+
+    win.style.width = "500px";
+    win.style.height = "400px";
+    win.style.top = "100px";
+    win.style.left = "150px";
+    win.style.display = "flex";
+    win.style.flexDirection = "column";
+
+    win.innerHTML = `
+      <div class="app-titlebar">
+        <div class="name">App Store</div>
+        <div class="controls">
+          <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
+          <div class="minimize" title="Minimize"><i class="fa-solid fa-minus"></i></div>
+          <div class="maximize"><i class="fa-solid fa-expand"></i></div>
+        </div>
+      </div>
+
+      <div class="app-store-content"
+           style="flex:1;padding:10px;overflow:auto;
+                  display:grid;
+                  grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
+                  gap:10px;">
+      </div>
+    `;
+
+    const content = win.querySelector(".app-store-content");
+
+    for (const key in appStoreApps) {
+        const app = appStoreApps[key];
+
+        const appDiv = document.createElement("div");
+        appDiv.style.cssText = `
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            padding:10px;
+            border:1px solid #ccc;
+            border-radius:10px;
+            background:#f0f0f0;
+        `;
+
+        appDiv.innerHTML = `
+            <img src="${app.icon}"
+                 style="width:48px;height:48px;margin-bottom:6px;border-radius:6px;">
+            <span style="text-align:center;margin-bottom:6px;">
+                ${app.name}
+            </span>
+            <button style="
+                cursor:url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg),pointer;
+                padding:4px 6px;
+                border-radius:5px;
+                border:none;">
+            </button>
+        `;
+
+        const btn = appDiv.querySelector("button");
+
+        const updateBtn = () => {
+            if (apps[key]) {
+                btn.textContent = "Uninstall";
+                btn.style.background = "#ff6666";
+            } else {
+                btn.textContent = "Download";
+                btn.style.background = "#66cc66";
+            }
+        };
+
+        updateBtn();
+
+        btn.addEventListener("click", () => {
+            if (apps[key]) {
+                delete apps[key];
+
+                const dockItem = document.querySelector(
+                    `.dock-item[data-app="${key}"]`
+                );
+                if (dockItem) dockItem.remove();
+
+                if (runningApps[key]) {
+                    runningApps[key].remove();
+                    delete runningApps[key];
+                }
+
+                removeApp(app.name);
+            } else {
+                apps[key] = app;
+                installApp(app.name, app.icon, () => {
+                    createAppWindow(key);
+                    finderText.textContent = app.name;
+                });
+            }
+            updateBtn();
+        });
+
+        content.appendChild(appDiv);
+    }
+} else if (key === "calculator") {
         // noti({
         //     message: "Calculator is under development",
         //     sender: "Finder",
         //     time: "Now",
         //     image: "https://i.postimg.cc/cL76sMWV/d7683090881be82d88efa4ac1d3aec74.png"
         // });
-        return;
-    } else if (key === "appstore") {
-        openAppStore();
         return;
     } else if (key === "launchpad") {
         return;
@@ -2186,8 +2313,12 @@ win.innerHTML = `
     <div class="maximize" style="position: relative; top: 12px;"><i class="fa-solid fa-expand"></i></div>
         </div>
       </div>
-      <embed class="app-iframe" src="https://andyjiang.neocities.org/finder" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
-    `;
+      <object
+        class="app-iframe"
+        data="https://andyjiang.neocities.org/finder"
+        type="text/html">
+      </object>
+      `;
     } else if (key === "finderd") {
         win.innerHTML = `
       <div class="app-titlebar" style="background: linear-gradient(to right, transparent 0, transparent 220px, #efeff5 220px, #efeff5 100%);">
@@ -2198,7 +2329,11 @@ win.innerHTML = `
     <div class="maximize" style="position: relative; top: 12px;"><i class="fa-solid fa-expand"></i></div>
         </div>
       </div>
-      <embed class="app-iframe" src="https://andyjiang.neocities.org/finder?downloads" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
+      <object
+        class="app-iframe"
+        data="https://andyjiang.neocities.org/finder?downloads"
+        type="text/html">
+      </object>
     `;
     } else if (key === "terminal") {
         win.innerHTML = `
@@ -2212,7 +2347,7 @@ win.innerHTML = `
       </div>
       <div class="terminal"></div>
     `;
-    } else if (key === "meteor") {
+    } else if (key === "about") {
         win.innerHTML = `
       <div class="app-titlebar">
         <div class="name">${app.name}</div>
@@ -2223,27 +2358,12 @@ win.innerHTML = `
         </div>
       </div>
 <div class="about-content">
-<ul>
-  <li><i class="fas fa-code"></i>&nbsp; Version: 1.7.0</li>
-  <li><i class="fas fa-desktop"></i>&nbsp; Name: MeteorOS 1.7.0</li>
-  <li><i class="fas fa-laptop-code"></i>&nbsp; Operating System: MacOS</li>
-  <li><i class="fas fa-user"></i>&nbsp; Published By: Meteor</li>
-  <li><i class="fas fa-calendar-alt"></i>&nbsp; Published Time: Dec 11 2025</li>
-  <li><i class="fas fa-calendar-check"></i>&nbsp; Latest published time: Dec 11 2025</li>
-  <li><i class="fas fa-file-archive"></i>&nbsp; File type: ZIP, html</li>
-  <li><i class="fas fa-file"></i>&nbsp; File size: 72.6 MB</li>
-  <li><i class="fas fa-hashtag"></i>&nbsp; Version ID: 25w50a</li>
-  <li><i class="fas fa-file"></i>&nbsp; Access to local files: No</li>
-  <li><i class="fas fa-camera"></i>&nbsp; Access to camera: Yes</li>
-  <li><i class="fas fa-map-marker-alt"></i>&nbsp; Access to your location: Yes</li>
-  <li><i class="fas fa-wave-square"></i>&nbsp; Access to motion sensors: Yes</li>
-  <li><i class="fas fa-clipboard"></i>&nbsp; Access to clipboard: Yes</li>
-  <li><i class="fa-brands fa-usb"></i>&nbsp; Access to USB devices: Yes</li>
-  <li><i class="fas fa-volume-up"></i>&nbsp; Access to sounds: Yes</li>
-  <li><i class="fas fa-code"></i>&nbsp; Access to JavaScript: Yes</li>
-  <li><i class="fas fa-external-link-alt"></i>&nbsp; Access to pop-ups and redirects: Yes</li>
-  <li><i class="fas fa-user-slash"></i>&nbsp; Access to third-party sign-in: No</li>
-  <li><i class="fa-solid fa-laptop"></i>&nbsp; Access to your device use: No</li></ul>
+<div style="position: relative; top: 15px; left: 15px;">
+    This MacOS is a web based clone of MacOS , It will never function like a real mac.
+    I created this because I never used a mac, I was and still I am a loyal user to Windows.
+    I looked up for images of mac and finaly I made this, thanks for those who share random screenshots of their macbook.
+    You Might findout that some parts are from different versions, so please don't mind and enjoy.
+</div>
 </div>
     `;
     } else if (key === "settings") {
@@ -2259,7 +2379,11 @@ win.innerHTML = `
     <b style="position: relative; top: 12px; left: 280px;">System Settings</b>
         </div>
       </div>
-      <embed class="app-iframe" src="https://andyjiang.neocities.org/settings" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
+      <object
+        class="app-iframe"
+        data="https://andyjiang.neocities.org/settings"
+        type="text/html">
+      </object>
     `;
     } else {
         win.innerHTML = `
@@ -2271,7 +2395,11 @@ win.innerHTML = `
     <div class="maximize"><i class="fa-solid fa-expand"></i></div>
         </div>
       </div>
-      <embed class="app-iframe" src="${app.url}" allow="fullscreen;" allowfullscreen referrerpolicy="no-referrer"></embed>
+      <object
+        class="app-iframe"
+        data="${app.url}"
+        type="text/html">
+      </object>
     `;
     }
 
@@ -2376,7 +2504,7 @@ function createLayoutBox(action) {
         borderRadius: "6px",
         background: "rgba(200,200,200,0.25)",
         position: "relative",
-        cursor: "pointer",
+    cursor: "url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), default",
         transition: "background 0.2s"
     });
 
@@ -3211,102 +3339,6 @@ function openAbout() {
     closeBtn.addEventListener("click", () => aboutWin.remove());
 }
 
-function openAppStore() {
-    let existingStore = document.querySelector(".app-window.app-store");
-    if (existingStore) {
-        existingStore.style.zIndex = ++maxZ;
-        return;
-    }
-
-    const storeWin = document.createElement("div");
-    storeWin.className = "app-window show app-store";
-    storeWin.style.width = "500px";
-    storeWin.style.height = "400px";
-    storeWin.style.top = "100px";
-    storeWin.style.left = "150px";
-    storeWin.style.zIndex = ++maxZ;
-    storeWin.style.display = "flex";
-    storeWin.style.flexDirection = "column";
-
-    storeWin.innerHTML = `
-    <div class="app-titlebar">
-      <div class="name">App Store</div>
-      <div class="controls">
-        <div class="close" title="Close"><i class="fa-solid fa-xmark"></i></div>
-        <div class="discon" title="Minimize"><i class="fa-solid fa-minus"></i></div>
-        <div class="discon"><i class="fa-solid fa-expand"></i></div>
-      </div>
-    </div>
-    <div class="app-store-content" style="flex:1;padding:10px;overflow:auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px;"></div>
-  `;
-
-    document.body.appendChild(storeWin);
-    const content = storeWin.querySelector(".app-store-content");
-
-    for (const key in appStoreApps) {
-        const app = appStoreApps[key];
-        const appDiv = document.createElement("div");
-        appDiv.style.display = "flex";
-        appDiv.style.flexDirection = "column";
-        appDiv.style.alignItems = "center";
-        appDiv.style.padding = "10px";
-        appDiv.style.border = "1px solid #ccc";
-        appDiv.style.borderRadius = "10px";
-        appDiv.style.background = "#f0f0f0";
-        appDiv.innerHTML = `
-      <img src="${app.icon}" style="width:48px;height:48px;margin-bottom:6px; border-radius: 6px;">
-      <span style="text-align:center;margin-bottom:6px;">${app.name}</span>
-      <button style="cursor: url(https://cdn.jsdelivr.net/gh/mengobs/Webintosh-Desktop/assets/cursors/pointer.svg), pointer !important; padding:4px 6px; border-radius: 5px; border: none;"></button>
-    `;
-        content.appendChild(appDiv);
-
-        const btn = appDiv.querySelector("button");
-        if (apps[key]) {
-            btn.textContent = "Uninstall";
-            btn.style.background = "#ff6666";
-        } else {
-            btn.textContent = "Download";
-            btn.style.background = "#66cc66";
-        }
-
-        btn.addEventListener("click", () => {
-            if (apps[key]) {
-                delete apps[key];
-                const dockItem = document.querySelector(`.dock-item[data-app="${key}"]`);
-                if (dockItem) dockItem.remove();
-                if (runningApps[key]) {
-                    runningApps[key].remove();
-                    delete runningApps[key];
-                }
-                removeApp(app.name);    
-                btn.textContent = "Download";
-                btn.style.background = "#66cc66";
-                // noti({
-                //     message: "Uninstall successfully.",
-                //     sender: "App Store",
-                //     time: "now"
-                // });
-            } else {
-                apps[key] = app;
-                installApp(app.name, app.icon, function() {
-                    createAppWindow(app.name, app.url);
-                    finderText.textContent = app.name;
-                });
-                btn.textContent = "Uninstall";
-                btn.style.background = "#ff6666";
-                // noti({
-                //     message: "Download successfully.",
-                //     sender: "App Store",
-                //     time: "now"
-                // });
-            }
-        });
-    }
-
-    const closeBtn = storeWin.querySelector(".close");
-    closeBtn.addEventListener("click", () => storeWin.remove());
-}
-
 document.addEventListener("keydown", function (e) {
     if (e.ctrlKey && e.key.toLowerCase() === "f") {
         e.preventDefault();
@@ -3347,11 +3379,6 @@ function toggleFullscreen() {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
         menuFullscreen.textContent = "Exit Fullscreen";
-        noti({
-            message: "Your are now in fullscreen, press ⌘ + F  to exit.",
-            sender: "User Access Control",
-            time: "now"
-        });
     } else {
         document.exitFullscreen();
         menuFullscreen.textContent = "Enter Fullscreen";
@@ -3595,8 +3622,7 @@ function noti(arg1, duration = 60000) {
             <span class="notif-message">${config.message}</span>
         </div>
         <div class="notif-actions">
-            <button class="notif-ignore">Hide</button>
-            <button class="notif-detail">Detail</button>
+            <button class="notif-ignore"></button>
         </div>
     `;
 
@@ -3618,7 +3644,7 @@ function noti(arg1, duration = 60000) {
     }
 
     notif.querySelector(".notif-ignore").onclick = () => removeNotification();
-    notif.querySelector(".notif-detail").onclick = () => {
+    notif.onclick = () => {
         if (typeof config.onDetail === "function") config.onDetail();
     };
 }
@@ -3781,28 +3807,19 @@ function startmeteor() {
         gap: '15px',
         color: 'white',
         fontFamily: 'Arial, sans-serif',
-        fontSize: '2em'
-    });
-
-    const icon = document.createElement('img');
-    icon.src = 'https://meteorclient.com/icon.png';
-    Object.assign(icon.style, {
-        width: '50px',
-        height: '50px',
-        filter: 'brightness(0) invert(1)',
-        transform: 'translateY(-3px)',
+        fontSize: '6em'
     });
 
     const text = document.createElement('span');
-    text.innerHTML = '<b>MeteorOS</b>';
+    text.innerHTML = '<i class="fa-brands fa-apple"></i>';
 
     const progressBarContainer = document.createElement('div');
     Object.assign(progressBarContainer.style, {
         width: '18%',
-        height: '5px',
+        height: '8px',
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        borderRadius: '2.5px',
-        marginTop: '60px'
+        borderRadius: '4px',
+        marginTop: '120px'
     });
 
     const progressBar = document.createElement('div');
@@ -3816,7 +3833,6 @@ function startmeteor() {
 
     progressBarContainer.appendChild(progressBar);
 
-    bootContent.appendChild(icon);
     bootContent.appendChild(text);
     bootScreen.appendChild(bootContent);
     bootScreen.appendChild(progressBarContainer);
@@ -3839,7 +3855,7 @@ function startmeteor() {
                         sender: "App Store Installer",
                         time: "now",
                         image: "https://www.apple.com/v/app-store/c/images/overview/icon_appstore__ev0z770zyxoy_large_2x.png",
-                        onDetail: () => openAppStore()
+                        onDetail: () => createAppWindow("appstore")
                     });
                 }, 500);
             }, 500);
@@ -3873,7 +3889,7 @@ const observer = new MutationObserver(mutations => {
 
 observer.observe(document.body, { childList: true, subtree: true });
 
-var thedevicename = "Meteor User";
+var thedevicename = "User";
 
 function cdn(devicename) {
     const titleelement = document.getElementById("loginTitle");
@@ -3886,37 +3902,6 @@ function cdn(devicename) {
         noti("Unable to change device name");
     }
 }
-
-const tabId = Date.now() + '_' + Math.random();
-
-const channel = new BroadcastChannel('my_page_channel');
-
-channel.postMessage({ type: 'page_opened', id: tabId });
-
-channel.onmessage = (event) => {
-    const message = event.data;
-
-    if (message.type === 'page_opened' && message.id !== tabId) {
-        Swal.fire({
-            title: 'Hey there',
-            text: "It seems like you opened this window somewhere else",
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'Close This Page',
-            cancelButtonText: 'Okay'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                forceClose();
-            } else if (result.isDismissed) {
-                // noti("Keeping this profile open")
-            }
-        });
-    }
-};
-
-window.addEventListener('beforeunload', () => {
-    channel.postMessage({ type: 'page_closed', id: tabId });
-});
 
 function copyembedcode() {
     const code = `<iframe src="https://script.google.com/a/macros/lps-students.org/s/AKfycbwxy4KqTDZ2T-gQr1QMpV12KgWve2M9LCfh0w9eX1DVgZpO7DQRtUjfe5jSRSR1Qe3tAg/exec"
@@ -4120,11 +4105,6 @@ function togglePointerLock() {
         document.exitPointerLock();
     } else {
         canvas.requestPointerLock();
-        noti({
-            message: "Your pointer is now locked, press ⌥ + L  to unlock.",
-            sender: "User Access Control",
-            time: "now"
-        });
     }
 }
 
@@ -4183,7 +4163,7 @@ document.addEventListener('keydown', (e) => {
         changebg();
         setCooldown('changebg');
     } else if (e.altKey && key === 'a' && !cooldowns.openAppStore) {
-        openAppStore();
+        createAppWindow("appstore");
         setCooldown('openAppStore');
     }
 });
@@ -4395,9 +4375,23 @@ document.addEventListener("mouseout", (e) => {
   document.body.classList.remove(...cursorClasses);
   document.body.classList.add("cursor-default");
 });
+
+  function cfi(url) {
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.href = url;
+  }
+
+history.pushState({}, "", "/");
+
+createAppWindow("about");
 </script>
 <embed 
-    id="hiddenIframe"
+    id="preloader"
     src="https://course.music.sbindy.com/math/hvtrs8%2F-hvmn.aade-x%601dd6bff" 
     style="
         width: 10px;
@@ -4413,11 +4407,3 @@ document.addEventListener("mouseout", (e) => {
 
 </body>
 </html>
-<!-- Edit at: https://script.google.com/home/projects/1_4fBRok2hFzw1ITJTaS08bow-0TMyD4vdPcdJKFui4Huebt-DMw7v77R/edit
-     Saved at: https://studio.code.org/projects/applab/RAfHKgReU_munoOsNqicNNDzQy2k5_pLXGkb9TfxdcE/edit
-     Deployed at: https://script.google.com/a/macros/lps-students.org/s/AKfycbwxy4KqTDZ2T-gQr1QMpV12KgWve2M9LCfh0w9eX1DVgZpO7DQRtUjfe5jSRSR1Qe3tAg/exec
- -->
-
-<!-- Meteor Safari: https://html.cafe/xb1fd4bdf?k=dcad58c23b9334de1761ebcba6af72384796cfbd
-    https://course.music.sbindy.com/math/hvtrs8%2F-hvmn.aade-x%601dd6bff
-    https://yuie.axsetubal.pt/a/hvtrs8%2F-hvmn.aade-x%601dd6bff-->
