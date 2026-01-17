@@ -11,6 +11,7 @@
 	<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c9/Finder_Icon_macOS_Big_Sur.png" type="image/x-icon">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 	<link rel="manifest" href="https://googlechromelabs.github.io/pwa-examples/a2hs/manifest.json">
+    <link rel="manifest" href="/manifest.json">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<style>
         @keyframes rotate {
@@ -1291,7 +1292,7 @@
 <li style="display:flex;align-items:center;">Get Info</li>
 <li style="display:flex;align-items:center;" onclick="changebg();">Change Wallpaper... <small style="margin-left:auto;"><b>⌥</b> + Shift</small></li>
 <hr>
-<li style="display:flex;align-items:center;" id="installPWA">Install <small style="margin-left:auto;"></li>
+<li style="display:flex;align-items:center;" onclick="organize();">Organize <small style="margin-left:auto;"><b>⌘</b> + Shift + O</small></li>
 <li style="display:flex;align-items:center;" onclick="toggleFullscreen();">Fullscreen <small style="margin-left:auto;"><b>⌘</b> + F</small></li>
 <hr>
 <li id="notchtext" onclick="toggleNotch();">Show Notch</li>
@@ -4384,29 +4385,11 @@ document.addEventListener("mouseout", (e) => {
     link.href = url;
   }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+
 history.pushState({}, "", "/");
-
-let deferredPrompt = null;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-document.getElementById('installPWA').onclick = async () => {
-  if (!deferredPrompt) {
-    alert("Browser doesn't support installing");
-    return;
-  }
-
-  deferredPrompt.prompt();
-  const choice = await deferredPrompt.userChoice;
-
-  if (choice.outcome === 'accepted') {
-  }
-
-  deferredPrompt = null;
-};
 </script>
 </body>
 </html>
